@@ -12,7 +12,9 @@ def crypto_key_exchange(
     shared   = ffi.new('uint8_t[32]')
     your_sk  = ffi.new('uint8_t[32]', your_secret_key)
     their_pk = ffi.new('uint8_t[32]', their_public_key)
+
     lib.crypto_key_exchange(shared, your_sk, their_pk)
+    lib.crypto_wipe(your_sk, 32)
     return bytes(shared)
 
 
@@ -23,7 +25,9 @@ def crypto_key_exchange_public_key(
 
     sk = ffi.new('uint8_t[32]', your_secret_key)
     pk = ffi.new('uint8_t[32]')
+
     lib.crypto_key_exchange_public_key(pk, sk)
+    lib.crypto_wipe(sk, 32)
     return bytes(pk)
 
 
@@ -37,7 +41,9 @@ def crypto_x25519(
     shared   = ffi.new('uint8_t[32]')
     your_sk  = ffi.new('uint8_t[32]', your_secret_key)
     their_pk = ffi.new('uint8_t[32]', their_public_key)
+
     lib.crypto_x25519(shared, your_sk, their_pk)
+    lib.crypto_wipe(your_sk, 32)
     return bytes(shared)
 
 
@@ -48,5 +54,7 @@ def crypto_x25519_public_key(
 
     sk = ffi.new('uint8_t[32]', your_secret_key)
     pk = ffi.new('uint8_t[32]')
+
     lib.crypto_x25519_public_key(pk, sk)
+    lib.crypto_wipe(sk, 32)
     return bytes(pk)
