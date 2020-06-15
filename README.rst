@@ -4,7 +4,8 @@ monocypher-py
 Python bindings for `Monocypher <https://monocypher.org/>`_ using the cffi library.
 Monocypher is a small, fast, easy to deploy, and easy to use library.
 `monocypher-py` provides both high-level
-(similar to `PyNaCl <https://pynacl.readthedocs.io/en/stable/>`_
+(similar to `PyNaCl <https://pynacl.readthedocs.io/en/stable/>`_,
+but using Monocypher's higher-level functions instead)
 and low-level APIs around Monocypher::
 
     >>> from monocypher.public import PrivateKey, Box
