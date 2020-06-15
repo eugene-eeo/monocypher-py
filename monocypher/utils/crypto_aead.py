@@ -1,9 +1,5 @@
-from monocypher.utils import ensure, ensure_bytes, ensure_bytes_with_length
+from monocypher.utils import ensure_bytes, ensure_bytes_with_length
 from monocypher._monocypher import lib, ffi
-
-
-class CryptoError(Exception):
-    pass
 
 
 def crypto_lock(
@@ -19,7 +15,7 @@ def crypto_lock(
 
     key   = ffi.new('uint8_t[32]', key)
     nonce = ffi.new('uint8_t[24]', nonce)
-    mac   = ffi.new('uint8_t[16]', bytes(16))
+    mac   = ffi.new('uint8_t[16]')
     pt    = ffi.new('uint8_t[]', msg)
     ad    = ffi.new('uint8_t[]', additional_data)
     ct    = ffi.new('uint8_t[]', bytes(len(msg)))
@@ -58,7 +54,7 @@ def crypto_unlock(
     ad    = ffi.new('uint8_t[]', additional_data)
     ct    = ffi.new('uint8_t[]', ciphertext)
 
-    rt = lib.crypto_unlock_aead(
+    rv = lib.crypto_unlock_aead(
         pt,
         key,
         nonce,
@@ -66,7 +62,8 @@ def crypto_unlock(
         ad, len(additional_data),
         ct, len(ciphertext),
     )
-    ensure(rt == 0, CryptoError, 'failed to unlock')
     lib.crypto_wipe(key, 32)
+    if rv != 0:
+        return None
     # pt is zero padded at the end
     return bytes(pt)[:-1]

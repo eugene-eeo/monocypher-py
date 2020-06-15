@@ -15,7 +15,7 @@ and low-level APIs around Monocypher:
     >>> box.encrypt(b'hello world!')
     b'\xdbZn...'
 
-    >>> import monocypher.utils.bindings as mc
+    >>> import monocypher.bindings as mc
     >>> sk_a_bytes = sk_a.encode()
     >>> pk_b_bytes = sk_b.public_key.encode()
     >>> shared_key = mc.crypto_key_exchange(sk_a_bytes, pk_b_bytes)

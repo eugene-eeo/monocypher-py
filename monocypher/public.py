@@ -55,7 +55,7 @@ class PrivateKey(Encodable):
 
 
 class Box(SecretBox):
-    def __init__(self, your_sk: PrivateKey, their_pk: PublicKey):
+    def __init__(self, your_sk, their_pk):
         ensure(isinstance(your_sk, PrivateKey), 'your_sk should be a PrivateKey instance')
         ensure(isinstance(their_pk, PublicKey), 'their_pk should be a PublicKey instance')
         super().__init__(crypto_key_exchange(

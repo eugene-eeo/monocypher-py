@@ -1,9 +1,13 @@
 from secrets import token_bytes
 from monocypher.utils import ensure_bytes_with_length, ensure_bytes, Encodable
-from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock, CryptoError
+from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock
 
 
-__all__ = ('EncryptedMessage', 'SecretBox')
+__all__ = ('EncryptedMessage', 'SecretBox', 'CryptoError')
+
+
+class CryptoError(Exception):
+    pass
 
 
 class EncryptedMessage(bytes):
@@ -58,10 +62,13 @@ class SecretBox(Encodable):
                                            ciphertext=ct)
 
     def decrypt_raw(self, ciphertext, nonce, mac):
-        return crypto_unlock(key=self.shared_key,
-                             mac=mac,
-                             nonce=nonce,
-                             ciphertext=ciphertext)
+        msg = crypto_unlock(key=self.shared_key,
+                            mac=mac,
+                            nonce=nonce,
+                            ciphertext=ciphertext)
+        if msg is None:
+            raise CryptoError('failed to decrypt ciphertext')
+        return msg
 
     def decrypt(self, ciphertext, nonce=None):
         ensure_bytes('ciphertext', ciphertext)

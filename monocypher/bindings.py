@@ -1,4 +1,4 @@
-from .crypto_aead import crypto_lock, crypto_unlock, CryptoError
+from .crypto_aead import crypto_lock, crypto_unlock
 from .crypto_cmp import crypto_verify16, crypto_verify32, crypto_verify64
 from .crypto_hash import (
     crypto_blake2b,
@@ -28,7 +28,7 @@ from .crypto_sign import (
 )
 
 __all__ = (
-    'crypto_lock', 'crypto_unlock', 'CryptoError',
+    'crypto_lock', 'crypto_unlock',
     'crypto_verify16', 'crypto_verify32', 'crypto_verify64',
     'crypto_blake2b',
     'crypto_blake2b_init', 'crypto_blake2b_update', 'crypto_blake2b_final',

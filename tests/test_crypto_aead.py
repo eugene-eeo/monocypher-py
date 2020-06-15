@@ -1,7 +1,6 @@
-from pytest import raises
 from hypothesis import given
 from hypothesis.strategies import binary
-from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock, CryptoError
+from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock
 from monocypher._monocypher import ffi, lib
 
 
@@ -51,21 +50,18 @@ def test_crypto_lock(key, nonce, msg, additional_data):
 def test_crypto_lock_mac(key, nonce, msg, mac2):
     mac, _, ct = crypto_lock(key, nonce, msg)
     if mac != mac2:
-        with raises(CryptoError):
-            crypto_unlock(key, mac2, nonce, ct)
+        assert crypto_unlock(key, mac2, nonce, ct) is None
 
 
 @given(KEY, NONCE, MSG, NONCE)
 def test_crypto_lock_nonce(key, nonce, msg, nonce2):
     mac, _, ct = crypto_lock(key, nonce, msg)
     if nonce != nonce2:
-        with raises(CryptoError):
-            crypto_unlock(key, mac, nonce2, ct)
+        assert crypto_unlock(key, mac, nonce2, ct) is None
 
 
 @given(KEY, NONCE, MSG, KEY)
 def test_crypto_lock_key(key, nonce, msg, key2):
     mac, _, ct = crypto_lock(key, nonce, msg)
     if key != key2:
-        with raises(CryptoError):
-            crypto_unlock(key2, mac, nonce, ct)
+        assert crypto_unlock(key2, mac, nonce, ct) is None

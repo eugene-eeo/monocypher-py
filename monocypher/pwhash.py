@@ -23,14 +23,7 @@ def _decode_base64(data):
     return b64decode(data)
 
 
-def argon2i(password, salt, nb_blocks=100000, nb_iterations=3, hash_size=32):
-    return crypto_argon2i(
-        password=password,
-        salt=salt,
-        hash_size=hash_size,
-        nb_blocks=nb_blocks,
-        nb_iterations=nb_iterations,
-    )
+argon2i = crypto_argon2i
 
 
 def pwhash(password, salt=None, nb_blocks=100000, nb_iterations=3, hash_size=64):

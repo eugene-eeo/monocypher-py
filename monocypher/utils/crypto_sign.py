@@ -18,8 +18,8 @@ def crypto_sign(
     secret_key,  # bytes[32],
     msg,         # bytes
 ):
-    ensure_bytes('msg', msg)
     ensure_bytes_with_length('secret_key', secret_key, 32)
+    ensure_bytes('msg', msg)
 
     msg_size = len(msg)
     sig = ffi.new('uint8_t[64]')

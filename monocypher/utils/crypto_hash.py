@@ -1,4 +1,4 @@
-from monocypher.utils import ensure_bytes, ensure_range, ensure, ensure_context
+from monocypher.utils import ensure_bytes, ensure_range, ensure_context
 from monocypher._monocypher import lib, ffi
 
 
