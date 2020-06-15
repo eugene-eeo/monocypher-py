@@ -3,11 +3,17 @@ import cffi
 ffi = cffi.FFI()
 ffi.set_source(
     'monocypher._monocypher',
-    '#include "monocypher.h"',
+    '''
+#include "monocypher.h"
+#include <stdlib.h>
+    ''',
     sources=['./src/monocypher.c'],
     include_dirs=['./src/'],
 )
 ffi.cdef('''
+void *malloc(size_t size);
+void free(void *ptr);
+
 // Vtable for EdDSA with a custom hash.
 // Instantiate it to define a custom hash.
 // Its size, contents, and layout, are part of the public API.

@@ -2,3 +2,5 @@ monocypher/_monocypher.c
 monocypher/_monocypher.o
 monocypher/_monocypher.cpython-38-x86_64-linux-gnu.so
 src/monocypher.o
+/.coverage
+/.hypothesis/
