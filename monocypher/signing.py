@@ -7,6 +7,9 @@ from monocypher.utils.crypto_sign import (
 from monocypher.public import PublicKey, PrivateKey
 
 
+__all__ = ('SignatureError', 'SignedMessage', 'VerifyKey', 'SigningKey')
+
+
 class SignatureError(Exception):
     pass
 

@@ -3,6 +3,9 @@ from monocypher.utils import ensure_bytes_with_length, ensure_bytes
 from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock, CryptoError
 
 
+__all__ = ('EncryptedMessage', 'SecretBox')
+
+
 class EncryptedMessage(bytes):
     @classmethod
     def from_parts(cls, nonce, mac, ciphertext):

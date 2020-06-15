@@ -16,7 +16,7 @@ from .crypto_sign import (
     crypto_from_eddsa_private, crypto_from_eddsa_public,
 )
 
-__all__ = [
+__all__ = (
     'crypto_lock', 'crypto_unlock', 'CryptoError',
     'crypto_verify16', 'crypto_verify32', 'crypto_verify64',
     'crypto_blake2b',
@@ -28,4 +28,4 @@ __all__ = [
     'crypto_argon2i',
     'crypto_sign_public_key', 'crypto_sign', 'crypto_check',
     'crypto_from_eddsa_private', 'crypto_from_eddsa_public',
-]
+)

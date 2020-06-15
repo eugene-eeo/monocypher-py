@@ -4,6 +4,9 @@ from monocypher.utils.crypto_public import crypto_key_exchange, crypto_key_excha
 from monocypher.secret import SecretBox
 
 
+__all__ = ('PublicKey', 'PrivateKey', 'Box')
+
+
 class PublicKey:
     __slots__ = ('_pk',)
 
