@@ -49,7 +49,7 @@ class SecretBox(Encodable):
 
     def encrypt(self, msg, nonce=None):
         mac, nonce, ct = crypto_lock(
-            key=self.shared_key,
+            key=self._key,
             msg=msg,
             nonce=token_bytes(24) if nonce is None else nonce,
         )
