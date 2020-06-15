@@ -16,19 +16,19 @@ def crypto_sign_public_key(
 
 def crypto_sign(
     secret_key,  # bytes[32],
-    message,     # bytes
+    msg,         # bytes
 ):
-    ensure_bytes('message', message)
+    ensure_bytes('msg', msg)
     ensure_bytes_with_length('secret_key', secret_key, 32)
 
     sig = ffi.new('uint8_t[64]')
     pk  = ffi.new('uint8_t[32]', crypto_sign_public_key(secret_key))
     sk  = ffi.new('uint8_t[32]', secret_key)
-    msg = ffi.new('uint8_t[]', message)
+    msg = ffi.new('uint8_t[]', msg)
 
     lib.crypto_sign(sig,
                     sk, pk,
-                    msg, len(message))
+                    msg, len(msg))
     lib.crypto_wipe(sk, 32)
     return bytes(sig)
 
@@ -36,17 +36,17 @@ def crypto_sign(
 def crypto_check(
     sig,         # bytes[64]
     public_key,  # bytes[32]
-    message,     # bytes
+    msg,         # bytes
 ):
     ensure_bytes_with_length('sig', sig, 64)
     ensure_bytes_with_length('public_key', public_key, 32)
-    ensure_bytes('message', message)
+    ensure_bytes('msg', msg)
 
     sig = ffi.new('uint8_t[64]', sig)
     pk  = ffi.new('uint8_t[32]', public_key)
-    msg = ffi.new('uint8_t[]', message)
+    msg = ffi.new('uint8_t[]', msg)
 
-    rv = lib.crypto_check(sig, pk, msg, len(message))
+    rv = lib.crypto_check(sig, pk, msg, len(msg))
     return rv == 0
 
 
