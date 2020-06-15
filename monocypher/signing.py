@@ -1,5 +1,6 @@
 from secrets import token_bytes
-from monocypher.utils import ensure_bytes, ensure_bytes_with_length
+from monocypher.utils import ensure_bytes, ensure_bytes_with_length, Encodable
+from monocypher.utils.crypto_cmp import crypto_verify32
 from monocypher.utils.crypto_sign import (
     crypto_check, crypto_sign, crypto_sign_public_key,
     crypto_from_eddsa_private, crypto_from_eddsa_public,
@@ -31,7 +32,7 @@ class SignedMessage(bytes):
         return self._msg
 
 
-class VerifyKey:
+class VerifyKey(Encodable):
     KEY_SIZE = 32
     SIG_SIZE = 64
 
@@ -42,7 +43,7 @@ class VerifyKey:
         self._pk = pk
 
     def __eq__(self, other):
-        return type(other) is self.__class__ and other._pk == self._pk
+        return isinstance(other, self.__class__) and crypto_verify32(other._pk, self._pk)
 
     def __hash__(self, other):
         return hash(self._pk)
@@ -59,14 +60,14 @@ class VerifyKey:
             raise SignatureError('invalid signature')
         return msg
 
-    def encode(self):
+    def __bytes__(self):
         return self._pk
 
     def to_public_key(self):
         return PublicKey(crypto_from_eddsa_public(self._pk))
 
 
-class SigningKey:
+class SigningKey(Encodable):
     KEY_SIZE = 32
     SIG_SIZE = 64
 
@@ -77,7 +78,7 @@ class SigningKey:
         self._sk = sk
 
     def __eq__(self, other):
-        return type(other) is self.__class__ and other._sk == self._sk
+        return isinstance(other, self.__class__) and crypto_verify32(other._sk, self._sk)
 
     def __hash__(self, other):
         return hash(self._sk)
@@ -90,7 +91,7 @@ class SigningKey:
         sig = crypto_sign(secret_key=self._sk, msg=msg)
         return SignedMessage.from_parts(sig=sig, msg=msg)
 
-    def encode(self):
+    def __bytes__(self):
         return self._sk
 
     @property

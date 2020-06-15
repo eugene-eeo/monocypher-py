@@ -1,5 +1,5 @@
 from secrets import token_bytes
-from monocypher.utils import ensure_bytes_with_length, ensure_bytes
+from monocypher.utils import ensure_bytes_with_length, ensure_bytes, Encodable
 from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock, CryptoError
 
 
@@ -33,7 +33,7 @@ class EncryptedMessage(bytes):
         return self._detacted_ciphertext
 
 
-class SecretBox:
+class SecretBox(Encodable):
     KEY_SIZE   = 32
     NONCE_SIZE = 24
     MAC_SIZE   = 16
@@ -44,7 +44,7 @@ class SecretBox:
         ensure_bytes_with_length('key', key, self.KEY_SIZE)
         self._key = key
 
-    def encode(self):
+    def __bytes__(self):
         return self._key
 
     def encrypt(self, msg, nonce=None):
