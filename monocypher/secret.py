@@ -16,8 +16,6 @@ class EncryptedMessage(bytes):
         obj = cls(nonce + mac + ciphertext)
         obj._nonce = nonce
         obj._ciphertext = mac + ciphertext
-        obj._detacted_mac = mac
-        obj._detached_ciphertext = ciphertext
         return obj
 
     @property
@@ -30,11 +28,11 @@ class EncryptedMessage(bytes):
 
     @property
     def detached_mac(self):
-        return self._detacted_mac
+        return self.ciphertext[:SecretBox.MAC_SIZE]
 
     @property
     def detached_ciphertext(self):
-        return self._detacted_ciphertext
+        return self.ciphertext[SecretBox.MAC_SIZE:]
 
 
 class SecretBox(Encodable):
@@ -42,7 +40,7 @@ class SecretBox(Encodable):
     NONCE_SIZE = 24
     MAC_SIZE   = 16
 
-    __slots__ = ('key',)
+    __slots__ = ('_key',)
 
     def __init__(self, key):
         ensure_bytes_with_length('key', key, self.KEY_SIZE)
@@ -52,17 +50,17 @@ class SecretBox(Encodable):
         return self._key
 
     def encrypt(self, msg, nonce=None):
-        mac, nonce, ct = crypto_lock(
-            key=self._key,
-            msg=msg,
-            nonce=token_bytes(24) if nonce is None else nonce,
-        )
+        if nonce is None:
+            nonce = token_bytes(self.NONCE_SIZE)
+        mac, nonce, ct = crypto_lock(key=self._key,
+                                     msg=msg,
+                                     nonce=nonce)
         return EncryptedMessage.from_parts(nonce=nonce,
                                            mac=mac,
                                            ciphertext=ct)
 
     def decrypt_raw(self, ciphertext, nonce, mac):
-        msg = crypto_unlock(key=self.shared_key,
+        msg = crypto_unlock(key=self._key,
                             mac=mac,
                             nonce=nonce,
                             ciphertext=ciphertext)
@@ -75,15 +73,14 @@ class SecretBox(Encodable):
         if nonce is None:
             # get from ciphertext, assume that it is encoded
             # with the default EncryptedMessage
-            if len(ciphertext) < 24 + 16:
+            if len(ciphertext) < self.NONCE_SIZE + self.MAC_SIZE:
                 raise CryptoError('malformed ciphertext')
-            nonce      = ciphertext[:24]
-            mac        = ciphertext[24:24 + 16]
-            ciphertext = ciphertext[24 + 16:]
+            nonce      = ciphertext[:self.NONCE_SIZE]
+            mac        = ciphertext[self.NONCE_SIZE:self.NONCE_SIZE + self.MAC_SIZE]
+            ciphertext = ciphertext[self.NONCE_SIZE + self.MAC_SIZE:]
         else:
-            ensure_bytes_with_length('nonce', nonce, self.NONCE_SIZE)
-            if len(ciphertext) < 16:
+            if len(ciphertext) < self.MAC_SIZE:
                 raise CryptoError('malformed ciphertext')
-            mac        = ciphertext[:16]
-            ciphertext = ciphertext[16:]
+            mac        = ciphertext[:self.MAC_SIZE]
+            ciphertext = ciphertext[self.MAC_SIZE:]
         return self.decrypt_raw(ciphertext, nonce, mac)

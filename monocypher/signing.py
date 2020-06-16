@@ -45,13 +45,13 @@ class VerifyKey(Encodable):
     def __eq__(self, other):
         return isinstance(other, self.__class__) and crypto_verify32(other._pk, self._pk)
 
-    def __hash__(self, other):
+    def __hash__(self):
         return hash(self._pk)
 
     def verify(self, msg, sig=None):
         ensure_bytes('msg', msg)
         if sig is None:
-            if len(msg) <= self.SIG_SIZE:
+            if len(msg) < self.SIG_SIZE:
                 raise SignatureError('corrupted message')
             sig = msg[:self.SIG_SIZE]
             msg = msg[self.SIG_SIZE:]
@@ -80,7 +80,7 @@ class SigningKey(Encodable):
     def __eq__(self, other):
         return isinstance(other, self.__class__) and crypto_verify32(other._sk, self._sk)
 
-    def __hash__(self, other):
+    def __hash__(self):
         return hash(self._sk)
 
     @classmethod

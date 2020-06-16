@@ -39,5 +39,7 @@ def ensure_context(name, value, type, how):
 
 
 class Encodable:
+    __slots__ = ()
+
     def encode(self):
         return bytes(self)

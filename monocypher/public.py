@@ -23,7 +23,7 @@ class PublicKey(Encodable):
     def __eq__(self, other):
         return isinstance(other, self.__class__) and crypto_verify32(other._pk, self._pk)
 
-    def __hash__(self, other):
+    def __hash__(self):
         return hash(self._pk)
 
 
@@ -50,14 +50,16 @@ class PrivateKey(Encodable):
     def __eq__(self, other):
         return isinstance(other, self.__class__) and crypto_verify32(other._sk, self._sk)
 
-    def __hash__(self, other):
+    def __hash__(self):
         return hash(self._sk)
 
 
 class Box(SecretBox):
+    __slots__ = ()
+
     def __init__(self, your_sk, their_pk):
-        ensure(isinstance(your_sk, PrivateKey), 'your_sk should be a PrivateKey instance')
-        ensure(isinstance(their_pk, PublicKey), 'their_pk should be a PublicKey instance')
+        ensure(isinstance(your_sk, PrivateKey), TypeError, 'your_sk should be a PrivateKey instance')
+        ensure(isinstance(their_pk, PublicKey), TypeError, 'their_pk should be a PublicKey instance')
         super().__init__(crypto_key_exchange(
             your_sk.encode(),
             their_pk.encode(),

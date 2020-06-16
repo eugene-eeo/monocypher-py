@@ -1,4 +1,5 @@
-from hypothesis import given
+import hashlib
+from hypothesis import given, example
 from hypothesis.strategies import integers, binary
 from monocypher.utils.crypto_hash import (
     crypto_blake2b,
@@ -20,21 +21,23 @@ HASH_SIZE   = integers(min_value=BLAKE2B_HASH_MIN, max_value=BLAKE2B_HASH_MAX)
 CHUNKS      = integers(min_value=1, max_value=200)
 
 
-@given(MSG, BLAKE2B_KEY, HASH_SIZE, CHUNKS)
-def test_crypto_blake2b(msg, key, hash_size, chunks):
-    digest = crypto_blake2b(msg, key, hash_size)
-    ctx = crypto_blake2b_init(key, hash_size)
-
+def chunked_update(ctx, update_func, msg, chunks):
     chunk_size = len(msg) // chunks
-
     for i in range(chunks):
         chunk = (
             msg if i == chunks - 1 else
             msg[:chunk_size]
         )
-        crypto_blake2b_update(ctx, chunk)
+        update_func(ctx, chunk)
         msg = msg[chunk_size:]
 
+
+@given(MSG, BLAKE2B_KEY, HASH_SIZE, CHUNKS)
+def test_crypto_blake2b(msg, key, hash_size, chunks):
+    digest = crypto_blake2b(msg, key, hash_size)
+    ctx = crypto_blake2b_init(key, hash_size)
+
+    chunked_update(ctx, crypto_blake2b_update, msg, chunks)
     assert crypto_blake2b_final(ctx) == digest
 
 
@@ -43,16 +46,7 @@ def test_crypto_sha512(msg, chunks):
     digest = crypto_sha512(msg)
     ctx = crypto_sha512_init()
 
-    chunk_size = len(msg) // chunks
-
-    for i in range(chunks):
-        chunk = (
-            msg if i == chunks - 1 else
-            msg[:chunk_size]
-        )
-        crypto_sha512_update(ctx, chunk)
-        msg = msg[chunk_size:]
-
+    chunked_update(ctx, crypto_sha512_update, msg, chunks)
     assert crypto_sha512_final(ctx) == digest
 
 
@@ -61,14 +55,12 @@ def test_crypto_hmac_sha512(msg, key, chunks):
     digest = crypto_hmac_sha512(msg, key)
     ctx = crypto_hmac_sha512_init(key)
 
-    chunk_size = len(msg) // chunks
-
-    for i in range(chunks):
-        chunk = (
-            msg if i == chunks - 1 else
-            msg[:chunk_size]
-        )
-        crypto_hmac_sha512_update(ctx, chunk)
-        msg = msg[chunk_size:]
-
+    chunked_update(ctx, crypto_hmac_sha512_update, msg, chunks)
     assert crypto_hmac_sha512_final(ctx) == digest
+
+
+# check that we are calling sha512 correctly!
+@given(MSG)
+@example(b'')
+def test_crypto_sha512_against_stdlib(msg):
+    assert crypto_sha512(msg) == hashlib.sha512(msg).digest()

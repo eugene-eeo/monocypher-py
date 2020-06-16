@@ -1,6 +1,6 @@
-from .crypto_aead import crypto_lock, crypto_unlock
-from .crypto_cmp import crypto_verify16, crypto_verify32, crypto_verify64
-from .crypto_hash import (
+from .utils.crypto_aead import crypto_lock, crypto_unlock
+from .utils.crypto_cmp import crypto_verify16, crypto_verify32, crypto_verify64
+from .utils.crypto_hash import (
     crypto_blake2b,
     crypto_blake2b_init, crypto_blake2b_update, crypto_blake2b_final,
     BLAKE2B_HASH_MIN, BLAKE2B_HASH_MAX,
@@ -11,12 +11,12 @@ from .crypto_hash import (
     crypto_hmac_sha512,
     crypto_hmac_sha512_init, crypto_hmac_sha512_update, crypto_hmac_sha512_final,
 )
-from .crypto_public import (
+from .utils.crypto_public import (
     crypto_key_exchange, crypto_key_exchange_public_key,
     crypto_x25519, crypto_x25519_public_key,
 )
-from .crypto_pwhash import crypto_argon2i
-from .crypto_sign import (
+from .utils.crypto_pwhash import crypto_argon2i
+from .utils.crypto_sign import (
     crypto_sign_public_key, crypto_sign, crypto_check,
     crypto_from_eddsa_private, crypto_from_eddsa_public,
     # ed25519

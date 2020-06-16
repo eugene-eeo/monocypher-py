@@ -14,7 +14,7 @@ def crypto_argon2i(
     ensure_bytes('password', password)
     ensure_bytes('salt', salt)
     ensure_range('len(salt)', len(salt), 8, float('+inf'))
-    ensure_range('hash_size', hash_size, 32, float('+inf'))
+    ensure_range('hash_size', hash_size, 1, float('+inf'))
     ensure_range('nb_blocks', nb_blocks, 8, float('+inf'))
     ensure_range('nb_iterations', nb_iterations, 1, float('+inf'))
     ensure_bytes('key', key)
