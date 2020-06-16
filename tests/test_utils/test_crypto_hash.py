@@ -1,3 +1,5 @@
+import json
+import os
 import hashlib
 from hypothesis import given, example
 from hypothesis.strategies import integers, binary
@@ -64,3 +66,31 @@ def test_crypto_hmac_sha512(msg, key, chunks):
 @example(b'')
 def test_crypto_sha512_against_stdlib(msg):
     assert crypto_sha512(msg) == hashlib.sha512(msg).digest()
+
+
+# test vectors
+
+vectors = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../vectors')
+blake2b_vectors = os.path.join(vectors, 'blake2-kat.json')
+hmac_sha512_vectors = os.path.join(vectors, 'hmac-sha512.json')
+
+
+def test_crypto_blake2b_vectors():
+    with open(blake2b_vectors, 'r') as f:
+        vectors = json.load(f)
+        for vec in vectors:
+            if vec['hash'] == 'blake2b':
+                msg = bytes(bytearray.fromhex(vec['in']))
+                key = bytes(bytearray.fromhex(vec['key']))
+                out = bytes(bytearray.fromhex(vec['out']))
+                assert crypto_blake2b(msg, key=key) == out
+
+
+def test_crypto_hmac_sha512_vectors():
+    with open(hmac_sha512_vectors, 'r') as f:
+        vectors = json.load(f)
+        for vec in vectors:
+            msg = bytes(bytearray.fromhex(vec['data']))
+            key = bytes(bytearray.fromhex(vec['key']))
+            out = bytes(bytearray.fromhex(vec['hash']))
+            assert crypto_hmac_sha512(msg, key=key) == out

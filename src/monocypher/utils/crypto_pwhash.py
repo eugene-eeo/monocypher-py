@@ -13,15 +13,15 @@ def crypto_argon2i(
 ):
     ensure_bytes('password', password)
     ensure_bytes('salt', salt)
-    ensure_range('len(salt)', len(salt), 8, float('+inf'))
-    ensure_range('hash_size', hash_size, 1, float('+inf'))
-    ensure_range('nb_blocks', nb_blocks, 8, float('+inf'))
-    ensure_range('nb_iterations', nb_iterations, 1, float('+inf'))
+    ensure_range('len(salt)', len(salt), min=8)
+    ensure_range('hash_size', hash_size, min=1)
+    ensure_range('nb_blocks', nb_blocks, min=8)
+    ensure_range('nb_iterations', nb_iterations, min=1)
     ensure_bytes('key', key)
     ensure_bytes('ad', ad)
 
     work_area = lib.malloc(nb_blocks * 1024)
-    if work_area == ffi.NULL:
+    if work_area == ffi.NULL:  # pragma: no cover
         raise RuntimeError('malloc() returned NULL')
 
     try:

@@ -22,7 +22,7 @@ def ensure_bytes_with_length(name, value, length):
     )
 
 
-def ensure_range(name, value, min, max):
+def ensure_range(name, value, min, max=float('+inf')):
     ensure(
         isinstance(value, int) and (min <= value <= max),
         TypeError,
