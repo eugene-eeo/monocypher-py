@@ -19,7 +19,7 @@ setup(
 
     author='Eeo Jun',
     author_email='141bytes@gmail.com',
-    python_requires='>=2.7',
+    python_requires='>=3.5',
     setup_requirements=setup_requirements,
     extras_require={
         'tests': tests_require,
