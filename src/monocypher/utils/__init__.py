@@ -1,4 +1,9 @@
+import os
 from monocypher._monocypher import ffi
+
+
+def random(n):
+    return os.urandom(n)
 
 
 def ensure(cond, exc, *args):

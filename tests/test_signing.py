@@ -1,7 +1,7 @@
 from pytest import raises
 from hypothesis import given
 from hypothesis.strategies import binary
-from secrets import token_bytes
+from monocypher.utils import random
 from monocypher.bindings import crypto_sign_public_key
 from monocypher.signing import SignatureError, SigningKey, VerifyKey
 
@@ -12,7 +12,7 @@ SIG = binary(min_size=SigningKey.SIG_SIZE, max_size=SigningKey.SIG_SIZE)
 
 
 def test_signingkey():
-    key_bytes = token_bytes(SigningKey.KEY_SIZE)
+    key_bytes = random(SigningKey.KEY_SIZE)
     sk = SigningKey(key_bytes)
 
     # hashable

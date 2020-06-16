@@ -1,7 +1,6 @@
 import re
-from secrets import token_bytes
 from base64 import b64encode, b64decode
-from monocypher.utils import ensure, ensure_bytes
+from monocypher.utils import ensure, ensure_bytes, random
 from monocypher.utils.crypto_pwhash import crypto_argon2i
 from monocypher.utils.crypto_cmp import crypto_verify32, crypto_verify16, crypto_verify64
 
@@ -28,7 +27,7 @@ argon2i = crypto_argon2i
 
 def pwhash(password, salt=None, nb_blocks=100000, nb_iterations=3, hash_size=64):
     if salt is None:
-        salt = token_bytes(16)
+        salt = random(16)
 
     ensure_bytes('password', password)
     ensure_bytes('salt', salt)

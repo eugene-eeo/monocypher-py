@@ -1,5 +1,4 @@
-from secrets import token_bytes
-from monocypher.utils import ensure_bytes, ensure_bytes_with_length, Encodable
+from monocypher.utils import ensure_bytes, ensure_bytes_with_length, Encodable, random
 from monocypher.utils.crypto_cmp import crypto_verify32
 from monocypher.utils.crypto_sign import (
     crypto_check, crypto_sign, crypto_sign_public_key,
@@ -85,7 +84,7 @@ class SigningKey(Encodable):
 
     @classmethod
     def generate(cls):
-        return cls(token_bytes(cls.KEY_SIZE))
+        return cls(random(cls.KEY_SIZE))
 
     def sign(self, msg):
         sig = crypto_sign(secret_key=self._sk, msg=msg)

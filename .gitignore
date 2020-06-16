@@ -7,3 +7,5 @@ monocypher/_monocypher.cpython-38-x86_64-linux-gnu.so
 /.hypothesis/
 /build/
 *.egg-info
+/docs/_build/
+/docs/_templates/

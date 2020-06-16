@@ -1,10 +1,10 @@
 from pytest import raises
-from secrets import token_bytes
+from monocypher.utils import random
 from monocypher.public import PublicKey, PrivateKey, Box
 
 
 def test_private_key():
-    e = token_bytes(PrivateKey.KEY_SIZE)
+    e = random(PrivateKey.KEY_SIZE)
     sk = PrivateKey(e)
 
     # hashable

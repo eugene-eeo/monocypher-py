@@ -1,5 +1,4 @@
-from secrets import token_bytes
-from monocypher.utils import ensure_bytes_with_length, ensure_bytes, Encodable
+from monocypher.utils import ensure_bytes_with_length, ensure_bytes, Encodable, random
 from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock
 
 
@@ -51,7 +50,7 @@ class SecretBox(Encodable):
 
     def encrypt(self, msg, nonce=None):
         if nonce is None:
-            nonce = token_bytes(self.NONCE_SIZE)
+            nonce = random(self.NONCE_SIZE)
         mac, nonce, ct = crypto_lock(key=self._key,
                                      msg=msg,
                                      nonce=nonce)

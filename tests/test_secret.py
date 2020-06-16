@@ -1,7 +1,7 @@
 from hypothesis import given
 from hypothesis.strategies import binary
 from pytest import raises
-from secrets import token_bytes
+from monocypher.utils import random
 from monocypher.secret import SecretBox, CryptoError, EncryptedMessage
 
 
@@ -11,7 +11,7 @@ NONCE = binary(min_size=SecretBox.NONCE_SIZE, max_size=SecretBox.NONCE_SIZE)
 
 
 def test_secret_box():
-    key = token_bytes(32)
+    key = random(32)
     box = SecretBox(key)
 
     assert box.encode() == key
@@ -45,7 +45,7 @@ def test_secret_box_encrypt_decrypt(key, msg, nonce):
 
 
 def test_secret_box_decrypt_invalid():
-    key = token_bytes(SecretBox.KEY_SIZE)
+    key = random(SecretBox.KEY_SIZE)
     box = SecretBox(key)
     m = box.encrypt(b'abcdef')
 

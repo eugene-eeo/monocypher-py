@@ -1,5 +1,4 @@
-from secrets import token_bytes
-from monocypher.utils import ensure_bytes_with_length, ensure, Encodable
+from monocypher.utils import ensure_bytes_with_length, ensure, Encodable, random
 from monocypher.utils.crypto_public import crypto_key_exchange, crypto_key_exchange_public_key
 from monocypher.utils.crypto_cmp import crypto_verify32
 from monocypher.secret import SecretBox
@@ -38,7 +37,7 @@ class PrivateKey(Encodable):
 
     @classmethod
     def generate(cls):
-        return cls(token_bytes(cls.KEY_SIZE))
+        return cls(random(cls.KEY_SIZE))
 
     @property
     def public_key(self):
@@ -66,4 +65,7 @@ class Box(SecretBox):
         ))
 
     def shared_key(self):
+        """
+        Returns the shared secret.
+        """
         return self._key

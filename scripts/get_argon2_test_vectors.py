@@ -1,6 +1,6 @@
 import json
 import argon2
-import secrets
+import os
 
 
 table = []
@@ -11,8 +11,8 @@ for nb_blocks_pow in range(3, 10):
         for hash_len in [8, 16, 32, 64]:
             for password_length in range(0, 100, 15):
                 for salt_length in range(8, 20 + 1, 3):
-                    password = secrets.token_bytes(password_length)
-                    salt     = secrets.token_bytes(salt_length)
+                    password = os.urandom(password_length)
+                    salt     = os.urandom(salt_length)
                     raw_hash = argon2.low_level.hash_secret_raw(
                         password,
                         salt,
