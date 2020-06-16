@@ -22,4 +22,11 @@ and low-level APIs around Monocypher:
     >>> box.shared_key() == shared_key
     True
 
-`monocypher-py` is licensed under CC-0.
+`monocypher-py` is licensed under CC-0. Differences from NaCl
+(and by-extension, PyNaCl):
+
+> - Authenticated encryption implements RFC 8439 with XChacha20 and Poly1305. XChacha20 nonces are big enough to be random.
+> - Hashing uses Blake2b, which is as secure as SHA-3, and as fast as MD5.
+> - Password key derivation is done with Argon2i, which won the [Password Hashing competition](https://password-hashing.net/).
+> - Key exchange uses X25519.
+> - Signatures use EdDSA (RFC 8032) with Blake2b and edwards25519. Optionally, Blake2b can be replaced by SHA-512 for Ed25519 compatibility.
