@@ -16,63 +16,49 @@ __all__ = ('Blake2bContext', 'blake2b',
            'HMACSHA512Context', 'hmac_sha512')
 
 
-class Blake2bContext:
-    __slots__ = ('_ctx', '_digest')
+class Context:
+    def __init__(self, ctx):
+        self._ctx = ctx
+        self._digest = None
 
+    def update(self, data):
+        if self._digest is not None:
+            raise RuntimeError('already finalised')
+        self._update(self._ctx, data)
+
+    def digest(self):
+        if self._digest is None:
+            self._digest = self._final(self._ctx)
+        return self._digest
+
+
+class Blake2bContext(Context):
     KEY_MIN  = BLAKE2B_KEY_MIN
     KEY_MAX  = BLAKE2B_KEY_MAX
     HASH_MIN = BLAKE2B_HASH_MIN
     HASH_MAX = BLAKE2B_HASH_MAX
 
     def __init__(self, key=b'', hash_size=64):
-        self._ctx = crypto_blake2b_init(key, hash_size)
-        self._digest = None
+        super().__init__(crypto_blake2b_init(key, hash_size))
 
-    def update(self, data):
-        if self._digest is not None:
-            raise RuntimeError('already finalised')
-        crypto_blake2b_update(self._ctx, data)
-
-    def digest(self):
-        if self._digest is None:
-            self._digest = crypto_blake2b_final(self._ctx)
-        return self._digest
+    _update = staticmethod(crypto_blake2b_update)
+    _final  = staticmethod(crypto_blake2b_final)
 
 
-class SHA512Context:
-    __slots__ = ('_ctx', '_digest')
-
+class SHA512Context(Context):
     def __init__(self):
-        self._ctx = crypto_sha512_init()
-        self._digest = None
+        super().__init__(crypto_sha512_init())
 
-    def update(self, data):
-        if self._digest is not None:
-            raise RuntimeError('already finalised')
-        crypto_sha512_update(self._ctx, data)
-
-    def digest(self):
-        if self._digest is None:
-            self._digest = crypto_sha512_final(self._ctx)
-        return self._digest
+    _update = staticmethod(crypto_sha512_update)
+    _final  = staticmethod(crypto_sha512_final)
 
 
-class HMACSHA512Context:
-    __slots__ = ('_ctx', '_digest')
-
+class HMACSHA512Context(Context):
     def __init__(self, key):
-        self._ctx = crypto_hmac_sha512_init(key)
-        self._digest = None
+        super().__init__(crypto_hmac_sha512_init(key))
 
-    def update(self, data):
-        if self._digest is not None:
-            raise RuntimeError('already finalised')
-        crypto_hmac_sha512_update(self._ctx, data)
-
-    def digest(self):
-        if self._digest is None:
-            self._digest = crypto_hmac_sha512_final(self._ctx)
-        return self._digest
+    _update = staticmethod(crypto_hmac_sha512_update)
+    _final  = staticmethod(crypto_hmac_sha512_final)
 
 
 blake2b     = crypto_blake2b
