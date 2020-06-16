@@ -1,6 +1,8 @@
 from hypothesis import given
 from hypothesis.strategies import binary, one_of, sampled_from, integers
-from monocypher.pwhash import pwhash, argon2i, verify
+from monocypher.pwhash import pwhash, verify
+
+from .utils import get_vectors, hex2bytes
 
 
 PASSWORD  = binary()
@@ -19,3 +21,11 @@ def test_pwhash(password, salt, hash_size, nb_blocks, nb_iters):
         nb_iterations=nb_iters,
         hash_size=hash_size,
     ))
+
+
+def test_pwhash_verify():
+    for vec in get_vectors('argon2i-vectors.json'):
+        if vec['hash_size'] not in {16, 32, 64}:
+            continue
+        password = hex2bytes(vec['password'])
+        assert verify(password, vec['enc'].encode('ascii'))
