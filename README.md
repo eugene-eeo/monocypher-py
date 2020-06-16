@@ -2,18 +2,10 @@
 
 Python bindings for [Monocypher](https://monocypher.org/) 3.1.0 using the cffi library.
 Monocypher is a small, fast, easy to deploy, and easy to use cryptography library.
-`monocypher-py` provides both high-level
-(similar to [PyNaCl](https://pynacl.readthedocs.io/en/stable/),
-but using Monocypher's higher-level functions instead)
+monocypher-py provides both high- (a-la [PyNaCl](https://pynacl.readthedocs.io/en/stable/))
 and low-level APIs around Monocypher.
-`monocypher-py` is licensed under CC-0. Differences from NaCl
-(and by-extension, PyNaCl):
-
- - Authenticated encryption uses RFC 8439 with XChacha20 and Poly1305.
- - Signatures use EdDSA (RFC 8032) with Blake2b and edwards25519.
- - Hashing uses Blake2b, which is as secure as SHA-3, and as fast as MD5.
- - Password key derivation is done with Argon2i.
- - Key exchange uses X25519.
+There is no aim for drop-down compatibility with PyNaCl (especially since Monocypher uses
+different primitives compared to NaCl).
 
 ### high-level api
 
