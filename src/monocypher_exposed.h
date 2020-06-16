@@ -1,17 +1,3 @@
-import cffi
-
-ffi = cffi.FFI()
-ffi.set_source(
-    'monocypher._monocypher',
-    '''
-#include "monocypher.h"
-#include "monocypher-ed25519.h"
-#include <stdlib.h>
-    ''',
-    sources=['./src/monocypher.c', './src/monocypher-ed25519.c'],
-    include_dirs=['./src/'],
-)
-ffi.cdef('''
 void *malloc(size_t size);
 void free(void *ptr);
 
@@ -306,6 +292,11 @@ void crypto_x25519_inverse(uint8_t       blind_salt [32],
                            const uint8_t private_key[32],
                            const uint8_t curve_point[32]);
 
+
+
+// optional stuff
+
+
 ////////////////////////
 /// Type definitions ///
 ////////////////////////
@@ -372,7 +363,3 @@ int crypto_ed25519_check(const uint8_t  signature [64],
 
 void crypto_from_ed25519_private(uint8_t x25519[32], const uint8_t eddsa[32]);
 void crypto_from_ed25519_public(uint8_t x25519[32], const uint8_t eddsa[32]);
-''')
-
-if __name__ == '__main__':
-    ffi.compile(verbose=True)

@@ -1,6 +1,9 @@
-monocypher/_monocypher.c
-monocypher/*.o
+*.o
+*.so
+src/monocypher/_monocypher.c
+src/monocypher/*.o
 monocypher/_monocypher.cpython-38-x86_64-linux-gnu.so
-src/*.o
 /.coverage
 /.hypothesis/
+/build/
+*.egg-info
