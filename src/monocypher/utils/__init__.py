@@ -15,7 +15,7 @@ def ensure_bytes(name, value):
     ensure(
         isinstance(value, bytes),
         TypeError,
-        f'{name} must be bytes',
+        '{} must be bytes'.format(name),
     )
 
 
@@ -23,7 +23,7 @@ def ensure_bytes_with_length(name, value, length):
     ensure(
         isinstance(value, bytes) and len(value) == length,
         TypeError,
-        f'{name} must be bytes with length {length}',
+        '{} must be bytes with length {}'.format(name, length),
     )
 
 
@@ -31,7 +31,7 @@ def ensure_range(name, value, min, max=float('+inf')):
     ensure(
         isinstance(value, int) and (min <= value <= max),
         TypeError,
-        f'{name} must be an integer between {min} and {max}',
+        '{name} must be an integer between {min} and {max}'.format(name=name, min=min, max=max),
     )
 
 
@@ -39,7 +39,7 @@ def ensure_context(name, value, type, how):
     ensure(
         ffi.typeof(value).cname == type,
         TypeError,
-        f'{name} should be from {how}'
+        '{} should be from {}'.format(name, how),
     )
 
 

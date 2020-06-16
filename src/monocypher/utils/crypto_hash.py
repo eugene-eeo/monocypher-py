@@ -21,7 +21,7 @@ def crypto_blake2b(
     key_size = len(key)
     msg_size = len(msg)
 
-    hash = ffi.new(f'uint8_t[{hash_size}]')
+    hash = ffi.new('uint8_t[{}]'.format(hash_size))
     key  = ffi.new('uint8_t[]', key)
     msg  = ffi.new('uint8_t[]', msg)
 
@@ -64,7 +64,7 @@ def crypto_blake2b_update(ctx, msg):
 def crypto_blake2b_final(ctx):
     ensure_context('ctx', ctx, 'crypto_blake2b_ctx *', 'crypto_blake2b_init()')
 
-    hash = ffi.new(f'uint8_t[{ctx.hash_size}]')
+    hash = ffi.new('uint8_t[{}]'.format(ctx.hash_size))
     lib.crypto_blake2b_final(ctx, hash)
     return bytes(hash)
 

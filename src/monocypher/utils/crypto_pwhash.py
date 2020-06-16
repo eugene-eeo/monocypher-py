@@ -29,7 +29,7 @@ def crypto_argon2i(
         salt_size = len(salt)
         key_size = len(key)
         ad_size  = len(ad)
-        hash     = ffi.new(f'uint8_t[{hash_size}]')
+        hash     = ffi.new('uint8_t[{}]'.format(hash_size))
         password = ffi.new('uint8_t[]', password)
         salt     = ffi.new('uint8_t[]', salt)
         key      = ffi.new('uint8_t[]', key)

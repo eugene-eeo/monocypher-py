@@ -39,15 +39,15 @@ def pwhash(password, salt=None, nb_blocks=100000, nb_iterations=3, hash_size=64)
         nb_blocks=nb_blocks,
         nb_iterations=nb_iterations,
     )
-    digest = _encode_base64(digest)
 
-    # formatting
-    v = '19'
-    M = nb_blocks
-    T = nb_iterations
-    salt = _encode_base64(salt)
-
-    return f'$argon2i$v={v}$m={M},t={T},p=1${salt}${digest}'.encode('ascii')
+    enc = '$argon2i$v={v}$m={M},t={T},p=1${salt}${digest}'.format(
+        v='19',
+        M=nb_blocks,
+        T=nb_iterations,
+        salt=_encode_base64(salt),
+        digest=_encode_base64(digest),
+    )
+    return enc.encode('ascii')
 
 
 def verify(password, hash):
