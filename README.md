@@ -1,5 +1,7 @@
 # monocypher-py
 
+[![Build Status](https://travis-ci.org/eugene-eeo/monocypher-py.svg?branch=master)](https://travis-ci.org/eugene-eeo/monocypher-py)
+
 Python bindings for [Monocypher](https://monocypher.org/) 3.1.0 using the cffi library.
 Monocypher is a small, fast, easy to deploy, and easy to use cryptography library.
 monocypher-py provides both high- (a-la [PyNaCl](https://pynacl.readthedocs.io/en/stable/))
