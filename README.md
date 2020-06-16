@@ -1,6 +1,7 @@
 # monocypher-py
 
 [![Build Status](https://travis-ci.org/eugene-eeo/monocypher-py.svg?branch=master)](https://travis-ci.org/eugene-eeo/monocypher-py)
+[![codecov](https://codecov.io/gh/eugene-eeo/monocypher-py/branch/master/graph/badge.svg)](https://codecov.io/gh/eugene-eeo/monocypher-py)
 
 Python bindings for [Monocypher](https://monocypher.org/) 3.1.0 using the cffi library.
 Monocypher is a small, fast, easy to deploy, and easy to use cryptography library.
@@ -11,7 +12,7 @@ different primitives compared to NaCl).
 
 ### high-level api
 
-```python
+```
 >>> from monocypher.public import PrivateKey, Box
 >>> sk_a = PrivateKey.generate()
 >>> sk_b = PrivateKey.generate()
@@ -22,7 +23,7 @@ b'\xdbZn...'
 
 ### low-level api
 
-```python
+```
 >>> import monocypher.bindings as mc
 >>> sk_a_bytes = sk_a.encode()
 >>> pk_b_bytes = sk_b.public_key.encode()
