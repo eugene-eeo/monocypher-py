@@ -1,6 +1,9 @@
+from hypothesis import given
+from hypothesis.strategies import binary
 from pytest import raises
 from monocypher.utils import random
-from monocypher.public import PublicKey, PrivateKey, Box
+from monocypher.public import PublicKey, PrivateKey, Box, SealedBox
+from monocypher.secret import CryptoError
 
 
 def test_private_key():
@@ -38,3 +41,32 @@ def test_public_workflow():
 
     msg = box_a.encrypt(b'abc')
     assert box_b.decrypt(msg) == b'abc'
+
+
+MSG = binary()
+
+
+@given(MSG)
+def test_sealed_box(msg):
+    sk = PrivateKey.generate()
+    fake_sk = PrivateKey.generate()
+
+    if fake_sk == sk:
+        return
+
+    box = SealedBox(sk.public_key)
+    enc = box.encrypt(msg)
+
+    # cannot decrypt what we have just sent!
+    with raises(RuntimeError):
+        box.decrypt(enc)
+
+    assert SealedBox(sk).decrypt(enc) == msg
+
+    with raises(CryptoError):
+        SealedBox(fake_sk).decrypt(enc)
+
+
+def test_sealed_box_raises_error():
+    with raises(TypeError):
+        SealedBox(b'blah')

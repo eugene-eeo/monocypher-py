@@ -2,6 +2,7 @@ from monocypher.utils import ensure_bytes_with_length, ensure, Encodable, random
 from monocypher.utils.crypto_public import crypto_key_exchange, crypto_key_exchange_public_key
 from monocypher.utils.crypto_cmp import crypto_verify32
 from monocypher.secret import SecretBox
+from monocypher.hash import blake2b
 
 
 __all__ = ('PublicKey', 'PrivateKey', 'Box')
@@ -108,3 +109,37 @@ class Box(SecretBox):
         for other symmetric ciphers.
         """
         return self._key
+
+
+class SealedBox:
+    __slots__ = ('_pk', '_sk')
+
+    def __init__(self, receipient_key):
+        if isinstance(receipient_key, PrivateKey):
+            self._pk = receipient_key.public_key
+            self._sk = receipient_key
+        elif isinstance(receipient_key, PublicKey):
+            self._pk = receipient_key
+            self._sk = None
+        else:
+            raise TypeError('receipient_key should be a PublicKey or PrivateKey instance')
+
+    def encrypt(self, msg):
+        ephemeral_sk = PrivateKey.generate()
+        ephemeral_pk = ephemeral_sk.public_key
+
+        nonce = blake2b(ephemeral_pk.encode() + self._pk.encode(),
+                        hash_size=Box.NONCE_SIZE)
+
+        ct = Box(ephemeral_sk, self._pk).encrypt(msg, nonce=nonce).ciphertext
+        return ephemeral_pk.encode() + ct
+
+    def decrypt(self, ciphertext):
+        ensure(self._sk is not None, RuntimeError, 'SecretBox cannot decrypt using a PublicKey')
+        e_pk = ciphertext[:PublicKey.KEY_SIZE]  # Ephemeral PublicKey
+        ct   = ciphertext[PublicKey.KEY_SIZE:]  # MAC + encrypted message
+        box = Box(self._sk, PublicKey(e_pk))
+        return box.decrypt(
+            ciphertext=ct,
+            nonce=blake2b(e_pk + self._pk.encode(), hash_size=24),
+        )
