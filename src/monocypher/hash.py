@@ -17,6 +17,8 @@ __all__ = ('Blake2bContext', 'blake2b',
 
 
 class Context:
+    __slots__ = ('_ctx', '_digest')
+
     def __init__(self, ctx):
         self._ctx = ctx
         self._digest = None
@@ -46,6 +48,8 @@ class Context:
 
 
 class Blake2bContext(Context):
+    __slots__ = ()
+
     KEY_MIN  = BLAKE2B_KEY_MIN
     KEY_MAX  = BLAKE2B_KEY_MAX
     HASH_MIN = BLAKE2B_HASH_MIN
@@ -59,6 +63,8 @@ class Blake2bContext(Context):
 
 
 class SHA512Context(Context):
+    __slots__ = ()
+
     def __init__(self):
         super().__init__(crypto_sha512_init())
 
@@ -67,6 +73,8 @@ class SHA512Context(Context):
 
 
 class HMACSHA512Context(Context):
+    __slots__ = ()
+
     def __init__(self, key):
         super().__init__(crypto_hmac_sha512_init(key))
 

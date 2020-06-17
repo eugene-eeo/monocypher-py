@@ -17,8 +17,8 @@ def crypto_sign(
     msg,         # bytes
 ):
     ensure_bytes_with_length('secret_key', secret_key, 32)
-    ensure_bytes('msg', msg)
 
+    msg = ffi.from_buffer('uint8_t[]', msg)
     sig = ffi.new('uint8_t[64]')
     pk  = ffi.new('uint8_t[32]')
 
@@ -38,6 +38,7 @@ def crypto_check(
     ensure_bytes_with_length('public_key', public_key, 32)
     ensure_bytes('msg', msg)
 
+    msg = ffi.from_buffer('uint8_t[]', msg)
     rv = lib.crypto_check(sig, public_key, msg, len(msg))
     return rv == 0
 
@@ -82,8 +83,8 @@ def crypto_ed25519_sign(
     msg,         # bytes
 ):
     ensure_bytes_with_length('secret_key', secret_key, 32)
-    ensure_bytes('msg', msg)
 
+    msg = ffi.from_buffer('uint8_t[]', msg)
     sig = ffi.new('uint8_t[64]')
     pk  = ffi.new('uint8_t[32]')
 
@@ -99,8 +100,8 @@ def crypto_ed25519_check(
 ):
     ensure_bytes_with_length('sig', sig, 64)
     ensure_bytes_with_length('public_key', public_key, 32)
-    ensure_bytes('msg', msg)
 
+    msg = ffi.from_buffer('uint8_t[]', msg)
     rv = lib.crypto_ed25519_check(sig, public_key, msg, len(msg))
     return rv == 0
 

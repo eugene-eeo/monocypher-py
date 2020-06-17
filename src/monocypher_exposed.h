@@ -139,8 +139,8 @@ void crypto_argon2i_general(uint8_t       *hash,      uint32_t hash_size,// >= 4
 
 // Key exchange (x25519 + HChacha20)
 // ---------------------------------
-void crypto_key_exchange_public_key(uint8_t your_public_key[32],
-                                    uint8_t your_secret_key[32]);
+void crypto_key_exchange_public_key(uint8_t       your_public_key[32],
+                                    const uint8_t your_secret_key[32]);
 void crypto_key_exchange(uint8_t       shared_key      [32],
                          const uint8_t your_secret_key [32],
                          const uint8_t their_public_key[32]);

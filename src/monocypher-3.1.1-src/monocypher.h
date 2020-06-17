@@ -1,4 +1,4 @@
-// Monocypher version 3.1.0
+// Monocypher version 3.1.1
 //
 // This file is dual-licensed.  Choose whichever licence you want from
 // the two licences listed below.
@@ -56,6 +56,10 @@
 
 #include <stddef.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 ////////////////////////
 /// Type definitions ///
@@ -351,5 +355,8 @@ void crypto_x25519_inverse(uint8_t       blind_salt [32],
                            const uint8_t private_key[32],
                            const uint8_t curve_point[32]);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif // MONOCYPHER_H

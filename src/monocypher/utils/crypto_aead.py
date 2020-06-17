@@ -10,11 +10,11 @@ def crypto_lock(
 ):
     ensure_bytes_with_length('key', key, 32)
     ensure_bytes_with_length('nonce', nonce, 24)
-    ensure_bytes('msg', msg)
-    ensure_bytes('ad', ad)
 
     mac = ffi.new('uint8_t[16]')
     ct  = ffi.new('uint8_t[]', len(msg))
+    msg = ffi.from_buffer('uint8_t[]', msg)
+    ad  = ffi.from_buffer('uint8_t[]', ad)
 
     lib.crypto_lock_aead(
         mac,
@@ -24,7 +24,6 @@ def crypto_lock(
         ad, len(ad),
         msg, len(msg),
     )
-    # ct is zero padded at the end
     return bytes(mac), bytes(ct)
 
 
@@ -41,6 +40,8 @@ def crypto_unlock(
     ensure_bytes('ciphertext', ciphertext)
     ensure_bytes('ad', ad)
 
+    ct = ffi.from_buffer('uint8_t[]', ciphertext)
+    ad = ffi.from_buffer('uint8_t[]', ad)
     pt = ffi.new('uint8_t[]', len(ciphertext))
     rv = lib.crypto_unlock_aead(
         pt,
@@ -48,9 +49,8 @@ def crypto_unlock(
         nonce,
         mac,
         ad, len(ad),
-        ciphertext, len(ciphertext),
+        ct, len(ct),
     )
     if rv != 0:
         return None
-    # pt is zero padded at the end
     return bytes(pt)

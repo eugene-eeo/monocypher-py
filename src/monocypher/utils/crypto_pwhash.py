@@ -14,7 +14,7 @@ def crypto_argon2i(
     ensure_bytes('password', password)
     ensure_bytes('salt', salt)
     ensure_range('len(salt)', len(salt), min=8)
-    ensure_range('hash_size', hash_size, min=1)
+    ensure_range('hash_size', hash_size, min=4)
     ensure_range('nb_blocks', nb_blocks, min=8)
     ensure_range('nb_iterations', nb_iterations, min=1)
     ensure_bytes('key', key)
@@ -28,7 +28,8 @@ def crypto_argon2i(
         hash = ffi.new('uint8_t[]', hash_size)
         lib.crypto_argon2i_general(
             hash, hash_size,
-            work_area, nb_blocks, nb_iterations,
+            work_area, nb_blocks,
+            nb_iterations,
             password, len(password),
             salt, len(salt),
             key, len(key),

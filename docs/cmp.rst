@@ -3,7 +3,7 @@ Constant-Time Comparisons
 
 .. module:: monocypher.cmp
 
-The following functions perform constant-time comparisons of :py:class:`~byte`
+The following functions perform constant-time comparisons of :py:class:`~bytes`
 objects of length 16, 32, and 64 respectively. They return ``True`` if they
 are equal, and ``False`` otherwise.
 

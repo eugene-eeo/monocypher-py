@@ -57,7 +57,7 @@ keys from them; please use a PDKF like Argon2.
 
 .. function:: monocypher.hash.sha512(msg)
 
-   Computes the SHA512 digest of the given `msg`.
+   Computes the SHA512 digest of the given `msg`, a bytes-like object.
 
    :rtype: :py:class:`~bytes`
 
@@ -66,9 +66,9 @@ HMAC-SHA512
 
 .. function:: monocypher.hash.hmac_sha512(msg, key)
 
-   Computes the HMAC-SHA512 MAC of the given `msg`.
-   In most cases the MAC can be safely truncated down to
-   16 bytes (but we leave that choice up to the user).
+   Computes the HMAC-SHA512 MAC of the given `msg` (a bytes-like object).
+   In most cases the MAC can be safely truncated down to 16 bytes
+   (but we leave that choice up to the user).
 
    :param key: The key (:py:class:`~bytes`). 32 is a good default. Keys longer
                than 128 bytes will be reduced to 64 bytes by hashing it with

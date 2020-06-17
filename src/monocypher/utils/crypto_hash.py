@@ -18,13 +18,12 @@ def crypto_blake2b(
     ensure_range('hash_size', hash_size, BLAKE2B_HASH_MIN, BLAKE2B_HASH_MAX)
 
     hash = ffi.new('uint8_t[]', hash_size)
-    size = len(msg)
     msg  = ffi.from_buffer('uint8_t[]', msg)
 
     lib.crypto_blake2b_general(
         hash, hash_size,
         key, len(key),
-        msg, size,
+        msg, len(msg),
     )
     return bytes(hash)
 
@@ -45,9 +44,8 @@ def crypto_blake2b_init(
 def crypto_blake2b_update(ctx, msg):
     ensure_context('ctx', ctx, 'crypto_blake2b_ctx *', 'crypto_blake2b_init()')
 
-    size = len(msg)
-    msg  = ffi.from_buffer('uint8_t[]', msg)
-    lib.crypto_blake2b_update(ctx, msg, size)
+    msg = ffi.from_buffer('uint8_t[]', msg)
+    lib.crypto_blake2b_update(ctx, msg, len(msg))
 
 
 def crypto_blake2b_final(ctx):
@@ -96,10 +94,9 @@ def crypto_hmac_sha512(
     ensure_bytes('key', key)
 
     hmac = ffi.new('uint8_t[64]')
-    size = len(msg)
     msg  = ffi.from_buffer('uint8_t[]', msg)
 
-    lib.crypto_hmac_sha512(hmac, key, len(key), msg, size)
+    lib.crypto_hmac_sha512(hmac, key, len(key), msg, len(msg))
     return bytes(hmac)
 
 
@@ -115,9 +112,8 @@ def crypto_hmac_sha512_init(key):
 def crypto_hmac_sha512_update(ctx, msg):
     ensure_context('ctx', ctx, 'crypto_hmac_sha512_ctx *', 'crypto_hmac_sha512_init()')
 
-    size = len(msg)
-    msg  = ffi.from_buffer('uint8_t[]', msg)
-    lib.crypto_hmac_sha512_update(ctx, msg, size)
+    msg = ffi.from_buffer('uint8_t[]', msg)
+    lib.crypto_hmac_sha512_update(ctx, msg, len(msg))
 
 
 def crypto_hmac_sha512_final(ctx):

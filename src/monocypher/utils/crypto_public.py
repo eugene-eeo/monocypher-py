@@ -15,14 +15,12 @@ def crypto_key_exchange(
     return bytes(shared)
 
 
-def crypto_key_exchange_public_key(
-    secret_key,  # bytes[32]
-):
-    ensure_bytes_with_length('secret_key', secret_key, 32)
+def crypto_key_exchange_public_key(your_secret_key):
+    ensure_bytes_with_length('your_secret_key', your_secret_key, 32)
 
     pk = ffi.new('uint8_t[32]')
 
-    lib.crypto_key_exchange_public_key(pk, secret_key)
+    lib.crypto_key_exchange_public_key(pk, your_secret_key)
     return bytes(pk)
 
 
@@ -39,12 +37,10 @@ def crypto_x25519(
     return bytes(shared)
 
 
-def crypto_x25519_public_key(
-    secret_key,  # bytes[32]
-):
-    ensure_bytes_with_length('secret_key', secret_key, 32)
+def crypto_x25519_public_key(your_secret_key):
+    ensure_bytes_with_length('secret_key', your_secret_key, 32)
 
     pk = ffi.new('uint8_t[32]')
 
-    lib.crypto_x25519_public_key(pk, secret_key)
+    lib.crypto_x25519_public_key(pk, your_secret_key)
     return bytes(pk)
