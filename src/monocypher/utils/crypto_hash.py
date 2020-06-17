@@ -48,7 +48,6 @@ def crypto_blake2b_update(ctx, msg):
     size = len(msg)
     msg  = ffi.from_buffer('uint8_t[]', msg)
     lib.crypto_blake2b_update(ctx, msg, size)
-    return ctx
 
 
 def crypto_blake2b_final(ctx):
@@ -80,7 +79,6 @@ def crypto_sha512_update(ctx, msg):
     size = len(msg)
     msg  = ffi.from_buffer('uint8_t[]', msg)
     lib.crypto_sha512_update(ctx, msg, size)
-    return ctx
 
 
 def crypto_sha512_final(ctx):
@@ -120,7 +118,6 @@ def crypto_hmac_sha512_update(ctx, msg):
     size = len(msg)
     msg  = ffi.from_buffer('uint8_t[]', msg)
     lib.crypto_hmac_sha512_update(ctx, msg, size)
-    return ctx
 
 
 def crypto_hmac_sha512_final(ctx):

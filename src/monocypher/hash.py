@@ -22,11 +22,24 @@ class Context:
         self._digest = None
 
     def update(self, data):
+        """
+        Update the context with the `bytes-like object
+        <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_.
+        If the :py:meth:`.digest` method was already called,
+        then this method raises :py:class:`RuntimeError`.
+
+        :raises: :py:class:`RuntimeError`
+        """
         if self._digest is not None:
             raise RuntimeError('already finalised')
         self._update(self._ctx, data)
 
     def digest(self):
+        """
+        Returns the hash.
+
+        :rtype: :py:class:`bytes`
+        """
         if self._digest is None:
             self._digest = self._final(self._ctx)
         return self._digest

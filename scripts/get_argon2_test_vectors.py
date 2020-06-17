@@ -22,20 +22,10 @@ for nb_blocks_pow in range(3, 10):
                         hash_len=hash_len,
                         type=argon2.low_level.Type.I,
                     )
-                    enc_hash = argon2.low_level.hash_secret(
-                        password,
-                        salt,
-                        parallelism=1,
-                        time_cost=nb_iterations,
-                        memory_cost=int(2 ** nb_blocks_pow),
-                        hash_len=hash_len,
-                        type=argon2.low_level.Type.I,
-                    )
                     table.append({
                         'password':      password.hex(),
                         'salt':          salt.hex(),
                         'hash':          raw_hash.hex(),
-                        'enc':           enc_hash.decode('ascii'),
                         'nb_blocks':     int(2 ** nb_blocks_pow),
                         'nb_iterations': nb_iterations,
                         'hash_size':     hash_len,

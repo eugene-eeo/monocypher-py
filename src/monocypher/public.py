@@ -2,7 +2,6 @@ from monocypher.utils import ensure_bytes_with_length, ensure, Encodable, random
 from monocypher.utils.crypto_public import crypto_key_exchange, crypto_key_exchange_public_key
 from monocypher.utils.crypto_cmp import crypto_verify32
 from monocypher.secret import SecretBox
-from monocypher.hash import blake2b
 
 
 __all__ = ('PublicKey', 'PrivateKey', 'Box')
@@ -14,8 +13,6 @@ class PublicKey(Encodable):
     This can be published.
 
     :param pk: The public key (bytes).
-
-    :cvar KEY_SIZE: Length of a public key (in bytes).
     """
 
     KEY_SIZE = 32
@@ -42,8 +39,6 @@ class PrivateKey(Encodable):
     This **must** be kept secret.
 
     :param sk: The private key (bytes).
-
-    :cvar KEY_SIZE: Length of a private key (in bytes).
     """
 
     KEY_SIZE = 32
@@ -112,6 +107,18 @@ class Box(SecretBox):
 
 
 class SealedBox:
+    """
+    SealedBox enables you to send a message decryptable by the private key
+    variant of the `receipient_key`. The message will not be decryptable by
+    you after encryption, providing deniability (but with no authentication --
+    the receipient cannot be sure that it was you who sent the message).
+
+    :param receipient_key: A :py:class:`~monocypher.public.PublicKey` or
+                           :py:class:`~monocypher.public.PrivateKey` object.
+                           If the latter is provided, then the SealedBox is
+                           able to decrypt messages.
+    """
+
     __slots__ = ('_pk', '_sk')
 
     def __init__(self, receipient_key):
@@ -125,21 +132,39 @@ class SealedBox:
             raise TypeError('receipient_key should be a PublicKey or PrivateKey instance')
 
     def encrypt(self, msg):
+        """
+        Encrypt the given `msg`. This works using a similar construction
+        as that from libsodium's `crypto_box_seal <https://libsodium.gitbook.io/doc/public-key_cryptography/sealed_boxes>`_;
+        (but using Monocypher's high level functions).
+        The idea is that an ephemeral private key is generated and used to
+        encrypt the message, which is decryptable only if you know the
+        receipient's private key and the ephemeral public key (and the
+        ephemeral public key hasn't been tampered with).
+
+        :param msg: The message to encrypt (bytes).
+        :rtype: :py:class:`bytes`
+        """
         ephemeral_sk = PrivateKey.generate()
         ephemeral_pk = ephemeral_sk.public_key
 
-        nonce = blake2b(ephemeral_pk.encode() + self._pk.encode(),
-                        hash_size=Box.NONCE_SIZE)
-
+        nonce = bytes(Box.NONCE_SIZE)
         ct = Box(ephemeral_sk, self._pk).encrypt(msg, nonce=nonce).ciphertext
         return ephemeral_pk.encode() + ct
 
     def decrypt(self, ciphertext):
+        """
+        Decrypt the given `ciphertext`. Returns the original message if
+        decryption was successful, otherwise raises :py:class:`~monocypher.secret.CryptoError`.
+
+        :param ciphertext: The ciphertext to decrypt (bytes).
+        :rtype: :py:class:`bytes`
+        :raises: :py:class:`~monocypher.secret.CryptoError`
+        """
         ensure(self._sk is not None, RuntimeError, 'SecretBox cannot decrypt using a PublicKey')
         e_pk = ciphertext[:PublicKey.KEY_SIZE]  # Ephemeral PublicKey
         ct   = ciphertext[PublicKey.KEY_SIZE:]  # MAC + encrypted message
-        box = Box(self._sk, PublicKey(e_pk))
+        box  = Box(self._sk, PublicKey(e_pk))
         return box.decrypt(
             ciphertext=ct,
-            nonce=blake2b(e_pk + self._pk.encode(), hash_size=24),
+            nonce=bytes(Box.NONCE_SIZE),
         )
