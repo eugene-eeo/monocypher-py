@@ -3,6 +3,9 @@ from monocypher._monocypher import lib, ffi
 
 
 def crypto_lock(key, nonce, msg, ad=b''):
+    """
+    :returns: (bytes(mac), bytes(ciphertext))
+    """
     ensure_bytes_with_length('key', key, 32)
     ensure_bytes_with_length('nonce', nonce, 24)
 
@@ -23,6 +26,9 @@ def crypto_lock(key, nonce, msg, ad=b''):
 
 
 def crypto_unlock(key, mac, nonce, ciphertext, ad=b''):
+    """
+    :returns: None or bytes(msg)
+    """
     ensure_bytes_with_length('key', key, 32)
     ensure_bytes_with_length('mac', mac, 16)
     ensure_bytes_with_length('nonce', nonce, 24)

@@ -36,7 +36,7 @@ User Guide
    hashing
    signing
    pwhash
-   cmp
+   utils
    bindings
 
 
