@@ -13,25 +13,19 @@ def crypto_blake2b(
     key=b'',       # bytes[0..64]
     hash_size=64,  # int[1..64]
 ):
-    ensure_bytes('msg', msg)
     ensure_bytes('key', key)
     ensure_range('len(key)', len(key), BLAKE2B_KEY_MIN, BLAKE2B_KEY_MAX)
     ensure_range('hash_size', hash_size, BLAKE2B_HASH_MIN, BLAKE2B_HASH_MAX)
 
-    key_size = len(key)
-    msg_size = len(msg)
-
-    hash = ffi.new('uint8_t[{}]'.format(hash_size))
-    key  = ffi.new('uint8_t[]', key)
-    msg  = ffi.new('uint8_t[]', msg)
+    hash = ffi.new('uint8_t[]', hash_size)
+    size = len(msg)
+    msg  = ffi.from_buffer('uint8_t[]', msg)
 
     lib.crypto_blake2b_general(
         hash, hash_size,
-        key, key_size,
-        msg, msg_size
+        key, len(key),
+        msg, size,
     )
-    lib.crypto_wipe(key, key_size)
-    lib.crypto_wipe(msg, msg_size)
     return bytes(hash)
 
 
@@ -43,28 +37,24 @@ def crypto_blake2b_init(
     ensure_range('len(key)', len(key), BLAKE2B_KEY_MIN, BLAKE2B_KEY_MAX)
     ensure_range('hash_size', hash_size, BLAKE2B_HASH_MIN, BLAKE2B_HASH_MAX)
 
-    key_size = len(key)
     ctx = ffi.new('crypto_blake2b_ctx *')
-    key = ffi.new('uint8_t[]', key)
-    lib.crypto_blake2b_general_init(ctx, hash_size, key, key_size)
+    lib.crypto_blake2b_general_init(ctx, hash_size, key, len(key))
     return ctx
 
 
 def crypto_blake2b_update(ctx, msg):
     ensure_context('ctx', ctx, 'crypto_blake2b_ctx *', 'crypto_blake2b_init()')
-    ensure_bytes('msg', msg)
 
-    msg_size = len(msg)
-    msg = ffi.new('uint8_t[]', msg)
-    lib.crypto_blake2b_update(ctx, msg, msg_size)
-    lib.crypto_wipe(msg, msg_size)
+    size = len(msg)
+    msg  = ffi.from_buffer('uint8_t[]', msg)
+    lib.crypto_blake2b_update(ctx, msg, size)
     return ctx
 
 
 def crypto_blake2b_final(ctx):
     ensure_context('ctx', ctx, 'crypto_blake2b_ctx *', 'crypto_blake2b_init()')
 
-    hash = ffi.new('uint8_t[{}]'.format(ctx.hash_size))
+    hash = ffi.new('uint8_t[]', ctx.hash_size)
     lib.crypto_blake2b_final(ctx, hash)
     return bytes(hash)
 
@@ -72,14 +62,9 @@ def crypto_blake2b_final(ctx):
 # Optional (Ed25519 + SHA256)
 
 def crypto_sha512(msg):
-    ensure_bytes('msg', msg)
-
-    msg_size = len(msg)
     hash = ffi.new('uint8_t[64]')
-    msg  = ffi.new('uint8_t[]', msg)
-
-    lib.crypto_sha512(hash, msg, msg_size)
-    lib.crypto_wipe(msg, msg_size)
+    msg  = ffi.from_buffer('uint8_t[]', msg)
+    lib.crypto_sha512(hash, msg, len(msg))
     return bytes(hash)
 
 
@@ -91,12 +76,10 @@ def crypto_sha512_init():
 
 def crypto_sha512_update(ctx, msg):
     ensure_context('ctx', ctx, 'crypto_sha512_ctx *', 'crypto_sha512_init()')
-    ensure_bytes('msg', msg)
 
-    msg_size = len(msg)
-    msg = ffi.new('uint8_t[]', msg)
-    lib.crypto_sha512_update(ctx, msg, msg_size)
-    lib.crypto_wipe(msg, msg_size)
+    size = len(msg)
+    msg  = ffi.from_buffer('uint8_t[]', msg)
+    lib.crypto_sha512_update(ctx, msg, size)
     return ctx
 
 
@@ -112,40 +95,31 @@ def crypto_hmac_sha512(
     msg,  # bytes
     key,  # bytes
 ):
-    ensure_bytes('msg', msg)
     ensure_bytes('key', key)
 
-    key_size = len(key)
-    msg_size = len(msg)
     hmac = ffi.new('uint8_t[64]')
-    key  = ffi.new('uint8_t[]', key)
-    msg  = ffi.new('uint8_t[]', msg)
+    size = len(msg)
+    msg  = ffi.from_buffer('uint8_t[]', msg)
 
-    lib.crypto_hmac_sha512(hmac, key, key_size, msg, msg_size)
-    lib.crypto_wipe(msg, msg_size)
-    lib.crypto_wipe(key, key_size)
+    lib.crypto_hmac_sha512(hmac, key, len(key), msg, size)
     return bytes(hmac)
 
 
 def crypto_hmac_sha512_init(key):
     ensure_bytes('key', key)
 
-    key_size = len(key)
     ctx = ffi.new('crypto_hmac_sha512_ctx *')
-    key = ffi.new('uint8_t[]', key)
 
-    lib.crypto_hmac_sha512_init(ctx, key, key_size)
+    lib.crypto_hmac_sha512_init(ctx, key, len(key))
     return ctx
 
 
 def crypto_hmac_sha512_update(ctx, msg):
     ensure_context('ctx', ctx, 'crypto_hmac_sha512_ctx *', 'crypto_hmac_sha512_init()')
-    ensure_bytes('msg', msg)
 
-    msg_size = len(msg)
-    msg = ffi.new('uint8_t[]', msg)
-    lib.crypto_hmac_sha512_update(ctx, msg, msg_size)
-    lib.crypto_wipe(msg, msg_size)
+    size = len(msg)
+    msg  = ffi.from_buffer('uint8_t[]', msg)
+    lib.crypto_hmac_sha512_update(ctx, msg, size)
     return ctx
 
 

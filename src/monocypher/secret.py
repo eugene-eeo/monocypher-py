@@ -10,6 +10,12 @@ class CryptoError(Exception):
 
 
 class EncryptedMessage(bytes):
+    """
+    A bytes subclass representing an encrypted message.
+    By default, monocypher-python represents encrypted and authenticated
+    messages as `nonce + mac + ciphertext`.
+    """
+
     @classmethod
     def from_parts(cls, nonce, mac, ciphertext):
         obj = cls(nonce + mac + ciphertext)
@@ -19,22 +25,59 @@ class EncryptedMessage(bytes):
 
     @property
     def nonce(self):
+        """
+        Returns the nonce.
+
+        :rtype: :class:`~bytes`
+        """
         return self._nonce
 
     @property
     def ciphertext(self):
+        """
+        Returns the concatenated mac and ciphertext.
+        This is equivalent concatenating :py:obj:`~EncryptedMessage.detached_mac`
+        and :py:obj:`~EncryptedMessage.detached_ciphertext`.
+
+        :rtype: :class:`~bytes`
+        """
         return self._ciphertext
 
     @property
     def detached_mac(self):
+        """
+        Returns the detached mac.
+
+        :rtype: :class:`~bytes`
+        """
         return self.ciphertext[:SecretBox.MAC_SIZE]
 
     @property
     def detached_ciphertext(self):
+        """
+        Returns the detached ciphertext.
+        This is different from :py:obj:`~EncryptedMessage.ciphertext`,
+        since the former returns the mac and the encryption.
+
+        :rtype: :class:`~bytes`
+        """
         return self.ciphertext[SecretBox.MAC_SIZE:]
 
 
 class SecretBox(Encodable):
+    """
+    Encrypts messages using XChacha20. The `key` parameter should be of
+    length :py:obj:`~monocypher.secret.SecretBox.KEY_SIZE`, and can be
+    produced in different ways, e.g. by using key exchange (e.g. :py:obj:`~monocypher.public.Box`),
+    or by using password key derivation (:py:obj:`~monocypher.pwhash.argon2i`).
+
+    :param key: A bytes object of length :py:obj:`~monocypher.secret.SecretBox.KEY_SIZE`.
+
+    :cvar KEY_SIZE: Length of a valid key in bytes.
+    :cvar NONCE_SIZE: Length of a valid nonce in bytes.
+    :cvar MAC_SIZE: Length of a valid MAC in bytes.
+    """
+
     KEY_SIZE   = 32
     NONCE_SIZE = 24
     MAC_SIZE   = 16
@@ -49,6 +92,17 @@ class SecretBox(Encodable):
         return self._key
 
     def encrypt(self, msg, nonce=None):
+        """
+        Encrypt the given message `msg`, optionally with a specified `nonce`.
+        If the given `nonce` is `None`, then it is automatically generated.
+        See :class:`~monocypher.secret.EncryptedMessage` for details on how
+        the encrypted message is encoded.
+
+        :param msg: Message to encrypt (bytes).
+        :param nonce: `None`, or a :py:obj:`bytes` object of length :py:obj:`~monocypher.secret.SecretBox.NONCE_SIZE`.
+
+        :rtype: :class:`~monocypher.secret.EncryptedMessage`
+        """
         if nonce is None:
             nonce = random(self.NONCE_SIZE)
         mac, nonce, ct = crypto_lock(key=self._key,
@@ -59,6 +113,18 @@ class SecretBox(Encodable):
                                            ciphertext=ct)
 
     def decrypt_raw(self, ciphertext, nonce, mac):
+        """
+        Decrypt the given `ciphertext`, `nonce`, and `mac`.
+        If the decryption is successful, the plaintext message
+        is returned.
+
+        :param ciphertext: Detached ciphertext to decrypt (bytes).
+        :param nonce: The nonce, a :py:obj:`bytes` object of length :py:obj:`~monocypher.secret.SecretBox.NONCE_SIZE`.
+        :param mac: The MAC, a :py:obj:`bytes` object of length :py:obj:`~monocypher.secret.SecretBox.MAC_SIZE`.
+
+        :rtype: :class:`~monocypher.secret.EncryptedMessage`
+        :raises: :class:`~monocypher.secret.CryptoError`
+        """
         msg = crypto_unlock(key=self._key,
                             mac=mac,
                             nonce=nonce,
@@ -68,6 +134,15 @@ class SecretBox(Encodable):
         return msg
 
     def decrypt(self, ciphertext, nonce=None):
+        """
+        Decrypt the given `ciphertext`, using the given `nonce` if supplied;
+        otherwise it is extracted from the `ciphertext`. The MAC is assumed
+        to be part of the `ciphertext`.
+
+        :param ciphertext: Can be a :class:`bytes` or :class:`~monocypher.secret.EncryptedMessage`
+                           instance.
+        :param nonce: The nonce, or `None`.
+        """
         ensure_bytes('ciphertext', ciphertext)
         if nonce is None:
             # get from ciphertext, assume that it is encoded

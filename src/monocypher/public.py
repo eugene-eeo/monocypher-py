@@ -8,6 +8,15 @@ __all__ = ('PublicKey', 'PrivateKey', 'Box')
 
 
 class PublicKey(Encodable):
+    """
+    X25519 public key.
+    This can be published.
+
+    :param pk: The public key (bytes).
+
+    :cvar KEY_SIZE: Length of a public key (in bytes).
+    """
+
     KEY_SIZE = 32
 
     __slots__ = ('_pk',)
@@ -27,6 +36,15 @@ class PublicKey(Encodable):
 
 
 class PrivateKey(Encodable):
+    """
+    X25519 private key.
+    This **must** be kept secret.
+
+    :param sk: The private key (bytes).
+
+    :cvar KEY_SIZE: Length of a private key (in bytes).
+    """
+
     KEY_SIZE = 32
 
     __slots__ = ('_sk',)
@@ -37,10 +55,20 @@ class PrivateKey(Encodable):
 
     @classmethod
     def generate(cls):
+        """
+        Generates a random :class:`~monocypher.public.PrivateKey` object.
+
+        :rtype: :class:`~monocypher.public.PrivateKey`
+        """
         return cls(random(cls.KEY_SIZE))
 
     @property
     def public_key(self):
+        """
+        Returns the corresponding :class:`~monocypher.public.PublicKey` object.
+
+        :rtype: :class:`~monocypher.public.PublicKey`
+        """
         return PublicKey(crypto_key_exchange_public_key(self._sk))
 
     def __bytes__(self):
@@ -54,6 +82,16 @@ class PrivateKey(Encodable):
 
 
 class Box(SecretBox):
+    """
+    A subclass of :class:`~monocypher.secret.SecretBox` object with the
+    encryption key being the shared key computed from the key exchange.
+    The shared key is computed using X25519 and HChaCha20.
+    For details see `Monocypher's documentation <https://monocypher.org/manual/key_exchange>`_.
+
+    :param your_sk: Your private key (a :class:`~monocypher.public.PrivateKey` object).
+    :param their_pk: Their public key (a :class:`~monocypher.public.PublicKey` object).
+    """
+
     __slots__ = ()
 
     def __init__(self, your_sk, their_pk):
@@ -66,6 +104,7 @@ class Box(SecretBox):
 
     def shared_key(self):
         """
-        Returns the shared secret.
+        Returns the shared secret. This value is safe for use as the key
+        for other symmetric ciphers.
         """
         return self._key

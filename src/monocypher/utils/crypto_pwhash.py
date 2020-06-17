@@ -25,24 +25,15 @@ def crypto_argon2i(
         raise RuntimeError('malloc() returned NULL')
 
     try:
-        password_size = len(password)
-        salt_size = len(salt)
-        key_size = len(key)
-        ad_size  = len(ad)
-        hash     = ffi.new('uint8_t[{}]'.format(hash_size))
-        password = ffi.new('uint8_t[]', password)
-        salt     = ffi.new('uint8_t[]', salt)
-        key      = ffi.new('uint8_t[]', key)
-        ad       = ffi.new('uint8_t[]', ad)
+        hash = ffi.new('uint8_t[]', hash_size)
         lib.crypto_argon2i_general(
             hash, hash_size,
             work_area, nb_blocks, nb_iterations,
-            password, password_size,
-            salt, salt_size,
-            key, key_size,
-            ad, ad_size,
+            password, len(password),
+            salt, len(salt),
+            key, len(key),
+            ad, len(ad),
         )
-        lib.crypto_wipe(password, password_size)
         return bytes(hash)
     finally:
         lib.free(work_area)

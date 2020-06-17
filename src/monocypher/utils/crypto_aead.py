@@ -13,25 +13,19 @@ def crypto_lock(
     ensure_bytes('msg', msg)
     ensure_bytes('additional_data', additional_data)
 
-    key   = ffi.new('uint8_t[32]', key)
-    nonce = ffi.new('uint8_t[24]', nonce)
-    mac   = ffi.new('uint8_t[16]')
-    pt    = ffi.new('uint8_t[]', msg)
-    ad    = ffi.new('uint8_t[]', additional_data)
-    ct    = ffi.new('uint8_t[]', bytes(len(msg)))
+    mac = ffi.new('uint8_t[16]')
+    ct  = ffi.new('uint8_t[]', len(msg))
 
     lib.crypto_lock_aead(
         mac,
         ct,
         key,
         nonce,
-        ad, len(additional_data),
-        pt, len(msg),
+        additional_data, len(additional_data),
+        msg, len(msg),
     )
-    lib.crypto_wipe(pt, len(msg))
-    lib.crypto_wipe(key, 32)
     # ct is zero padded at the end
-    return bytes(mac), bytes(nonce), bytes(ct)[:-1]
+    return bytes(mac), bytes(nonce), bytes(ct)
 
 
 def crypto_unlock(
@@ -47,23 +41,16 @@ def crypto_unlock(
     ensure_bytes('ciphertext', ciphertext)
     ensure_bytes('additional_data', additional_data)
 
-    key   = ffi.new('uint8_t[32]', key)
-    nonce = ffi.new('uint8_t[24]', nonce)
-    mac   = ffi.new('uint8_t[16]', mac)
-    pt    = ffi.new('uint8_t[]', bytes(len(ciphertext)))
-    ad    = ffi.new('uint8_t[]', additional_data)
-    ct    = ffi.new('uint8_t[]', ciphertext)
-
+    pt = ffi.new('uint8_t[]', len(ciphertext))
     rv = lib.crypto_unlock_aead(
         pt,
         key,
         nonce,
         mac,
-        ad, len(additional_data),
-        ct, len(ciphertext),
+        additional_data, len(additional_data),
+        ciphertext, len(ciphertext),
     )
-    lib.crypto_wipe(key, 32)
     if rv != 0:
         return None
     # pt is zero padded at the end
-    return bytes(pt)[:-1]
+    return bytes(pt)
