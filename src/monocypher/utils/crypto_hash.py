@@ -1,4 +1,4 @@
-from monocypher.utils import ensure_bytes, ensure_range, ensure_context
+from monocypher.utils import ensure_range, ensure_context
 from monocypher._monocypher import lib, ffi
 
 
@@ -8,12 +8,7 @@ BLAKE2B_HASH_MIN = 1
 BLAKE2B_HASH_MAX = 64
 
 
-def crypto_blake2b(
-    msg,           # bytes
-    key=b'',       # bytes[0..64]
-    hash_size=64,  # int[1..64]
-):
-    ensure_bytes('key', key)
+def crypto_blake2b(msg, key=b'', hash_size=64):
     ensure_range('len(key)', len(key), BLAKE2B_KEY_MIN, BLAKE2B_KEY_MAX)
     ensure_range('hash_size', hash_size, BLAKE2B_HASH_MIN, BLAKE2B_HASH_MAX)
 
@@ -28,11 +23,7 @@ def crypto_blake2b(
     return bytes(hash)
 
 
-def crypto_blake2b_init(
-    key=b'',
-    hash_size=64,
-):
-    ensure_bytes('key', key)
+def crypto_blake2b_init(key=b'', hash_size=64):
     ensure_range('len(key)', len(key), BLAKE2B_KEY_MIN, BLAKE2B_KEY_MAX)
     ensure_range('hash_size', hash_size, BLAKE2B_HASH_MIN, BLAKE2B_HASH_MAX)
 
@@ -73,10 +64,8 @@ def crypto_sha512_init():
 
 def crypto_sha512_update(ctx, msg):
     ensure_context('ctx', ctx, 'crypto_sha512_ctx *', 'crypto_sha512_init()')
-
-    size = len(msg)
-    msg  = ffi.from_buffer('uint8_t[]', msg)
-    lib.crypto_sha512_update(ctx, msg, size)
+    msg = ffi.from_buffer('uint8_t[]', msg)
+    lib.crypto_sha512_update(ctx, msg, len(msg))
 
 
 def crypto_sha512_final(ctx):
@@ -87,12 +76,7 @@ def crypto_sha512_final(ctx):
     return bytes(hash)
 
 
-def crypto_hmac_sha512(
-    msg,  # bytes
-    key,  # bytes
-):
-    ensure_bytes('key', key)
-
+def crypto_hmac_sha512(msg, key):
     hmac = ffi.new('uint8_t[64]')
     msg  = ffi.from_buffer('uint8_t[]', msg)
 
@@ -101,8 +85,6 @@ def crypto_hmac_sha512(
 
 
 def crypto_hmac_sha512_init(key):
-    ensure_bytes('key', key)
-
     ctx = ffi.new('crypto_hmac_sha512_ctx *')
 
     lib.crypto_hmac_sha512_init(ctx, key, len(key))

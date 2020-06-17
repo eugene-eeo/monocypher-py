@@ -1,4 +1,4 @@
-from monocypher.utils import ensure_bytes, ensure_range
+from monocypher.utils import ensure_range
 from monocypher._monocypher import lib, ffi
 
 
@@ -11,14 +11,10 @@ def crypto_argon2i(
     key=b'',
     ad=b'',
 ):
-    ensure_bytes('password', password)
-    ensure_bytes('salt', salt)
     ensure_range('len(salt)', len(salt), min=8)
     ensure_range('hash_size', hash_size, min=4)
     ensure_range('nb_blocks', nb_blocks, min=8)
     ensure_range('nb_iterations', nb_iterations, min=1)
-    ensure_bytes('key', key)
-    ensure_bytes('ad', ad)
 
     work_area = lib.malloc(nb_blocks * 1024)
     if work_area == ffi.NULL:  # pragma: no cover

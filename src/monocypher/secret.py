@@ -1,4 +1,4 @@
-from monocypher.utils import ensure_bytes_with_length, ensure_bytes, Encodable, random
+from monocypher.utils import ensure_bytes_with_length, Encodable, random
 from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock
 
 
@@ -148,10 +148,9 @@ class SecretBox(Encodable):
         otherwise it is extracted from the `ciphertext`. The MAC is assumed
         to be part of the `ciphertext`.
 
-        :param ciphertext: A :class:`bytes` or :class:`~monocypher.secret.EncryptedMessage` object.
+        :param ciphertext: A bytes-like object or :class:`~monocypher.secret.EncryptedMessage`.
         :param nonce: The nonce, or `None`.
         """
-        ensure_bytes('ciphertext', ciphertext)
         if nonce is None:
             # get from ciphertext, assume that it is encoded
             # with the default EncryptedMessage

@@ -1,4 +1,4 @@
-from monocypher.utils import ensure_bytes, ensure_bytes_with_length, Encodable, random
+from monocypher.utils import ensure_bytes_with_length, Encodable, random
 from monocypher.utils.crypto_cmp import crypto_verify32
 from monocypher.utils.crypto_sign import (
     crypto_check, crypto_sign, crypto_sign_public_key,
@@ -83,11 +83,10 @@ class VerifyKey(Encodable):
         is assumed to be prepended to `signed`. Return the original message if the
         verification succeeds, otherwise :py:class:`.SignatureError` is raised.
 
-        :param signed: A :py:class:`.SignedMessage` or :py:class:`~bytes` object.
+        :param signed: A bytes-like object, or a :py:class:`.SignedMessage` object.
         :param sig: None, or a :py:class:`~bytes` object with length :py:obj:`.SIG_SIZE`.
         :raises: :py:class:`.SignatureError`
         """
-        ensure_bytes('signed', signed)
         msg = signed
         if sig is None:
             if len(signed) < self.SIG_SIZE:

@@ -4,12 +4,9 @@ from monocypher.utils.crypto_public import (
     crypto_key_exchange, crypto_key_exchange_public_key,
     crypto_x25519, crypto_x25519_public_key,
 )
+from tests.utils import hex2bytes
 
 SK = binary(min_size=32, max_size=32)
-
-
-def hex2bytes(b):
-    return bytes(bytearray.fromhex(b))
 
 
 @given(SK, SK, SK)

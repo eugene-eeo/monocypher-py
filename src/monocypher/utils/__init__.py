@@ -11,14 +11,6 @@ def ensure(cond, exc, *args):
         raise exc(*args)
 
 
-def ensure_bytes(name, value):
-    ensure(
-        isinstance(value, bytes),
-        TypeError,
-        '{} must be bytes'.format(name),
-    )
-
-
 def ensure_bytes_with_length(name, value, length):
     ensure(
         isinstance(value, bytes) and len(value) == length,
