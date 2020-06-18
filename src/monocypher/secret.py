@@ -125,14 +125,14 @@ class SecretBox(Encodable):
         """
         Decrypt the given `ciphertext`, `nonce`, and `mac`.
         If the decryption is successful, the plaintext message
-        is returned.
+        is returned. If the decryption failed, :py:class:`.CryptoError`
+        is raised.
 
         :param ciphertext: Detached ciphertext to decrypt (bytes).
         :param nonce: The nonce, a :py:obj:`bytes` object of length :py:attr:`~monocypher.secret.SecretBox.NONCE_SIZE`.
         :param mac: The MAC, a :py:obj:`bytes` object of length :py:attr:`~monocypher.secret.SecretBox.MAC_SIZE`.
 
         :rtype: :class:`~monocypher.secret.EncryptedMessage`
-        :raises: :class:`~monocypher.secret.CryptoError`
         """
         msg = crypto_unlock(key=self._key,
                             mac=mac,

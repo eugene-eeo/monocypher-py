@@ -29,8 +29,6 @@ class Context:
         <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_.
         If the :py:meth:`.digest` method was already called,
         then this method raises :py:class:`RuntimeError`.
-
-        :raises: :py:class:`RuntimeError`
         """
         if self._digest is not None:
             raise RuntimeError('already finalised')

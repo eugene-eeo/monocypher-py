@@ -27,6 +27,10 @@ The output is suitable for use as the key for the :py:class:`~monocypher.secret.
    :param ad: Optional additional data (:py:class:`bytes`)
    :rtype: :py:class:`bytes`
 
+.. note::
+
+   Internally this is the same function as :py:func:`~monocypher.bindings.crypto_argon2i`
+
 Key Derivation
 --------------
 

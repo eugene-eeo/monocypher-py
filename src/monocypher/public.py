@@ -158,7 +158,6 @@ class SealedBox:
 
         :param ciphertext: The ciphertext to decrypt (bytes).
         :rtype: :py:class:`bytes`
-        :raises: :py:class:`~monocypher.secret.CryptoError`
         """
         ensure(self._sk is not None, RuntimeError, 'SecretBox cannot decrypt using a PublicKey')
         e_pk = ciphertext[:PublicKey.KEY_SIZE]  # Ephemeral PublicKey

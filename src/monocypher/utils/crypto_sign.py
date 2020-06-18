@@ -74,7 +74,7 @@ def crypto_ed25519_sign(secret_key, msg):
     return bytes(sig)
 
 
-def crypto_ed25519_check(sig, public_key, msg,):
+def crypto_ed25519_check(sig, public_key, msg):
     ensure_bytes_with_length('sig', sig, 64)
     ensure_bytes_with_length('public_key', public_key, 32)
 

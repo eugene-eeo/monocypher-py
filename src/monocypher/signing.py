@@ -85,7 +85,6 @@ class VerifyKey(Encodable):
 
         :param signed: A bytes-like object, or a :py:class:`.SignedMessage` object.
         :param sig: None, or a :py:class:`~bytes` object with length :py:obj:`.SIG_SIZE`.
-        :raises: :py:class:`.SignatureError`
         """
         msg = signed
         if sig is None:

@@ -8,8 +8,11 @@ returns a boolean representing whether the signature is valid,
 ``crypto_verify16`` returns whether the two byte strings match,
 etc.
 
-For parameters which can have unbounded length (except for ``key``
-and ``salt``), you can pass in a `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_.
+For parameters which can have unbounded length (except for ``key``,
+``salt``, and arguments to :py:func:`~monocypher.bindings.crypto_argon2i`),
+you can pass in a `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_,
+unless mentioned otherwise. Otherwise, you need to pass in a
+:py:class:`~bytes` object with the correct length.
 
 .. automodule:: monocypher.bindings
    :members:

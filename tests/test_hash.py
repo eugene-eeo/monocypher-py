@@ -11,7 +11,7 @@ from monocypher.hash import Blake2bContext, SHA512Context, HMACSHA512Context
     [crypto_hmac_sha512, HMACSHA512Context, {'key': random(256)}],
 ])
 def test_blake2b_context(fn, context, args):
-    digest = fn(**({**args, 'msg': b'abc'}))
+    digest = fn(msg=b'abc', **args)
     ctx = context(**args)
     ctx.update(b'a')
     ctx.update(b'b')

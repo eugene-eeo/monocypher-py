@@ -34,8 +34,20 @@ Reference
 .. autoclass:: monocypher.signing.SigningKey
    :members:
 
+   .. method:: encode()
+
+      Return the signing key as bytes.
+
+      :rtype: :py:class:`~bytes`
+
 .. autoclass:: monocypher.signing.VerifyKey
    :members:
+
+   .. method:: encode()
+
+      Return the verifying key as bytes.
+
+      :rtype: :py:class:`~bytes`
 
 .. autoclass:: monocypher.signing.SignedMessage
    :members:

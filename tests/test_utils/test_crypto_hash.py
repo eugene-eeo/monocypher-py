@@ -1,3 +1,4 @@
+import pytest
 import hashlib
 from hypothesis import given, example
 from hypothesis.strategies import integers, binary
@@ -84,3 +85,21 @@ def test_crypto_hmac_sha512_vectors():
         key = bytes(bytearray.fromhex(vec['key']))
         out = bytes(bytearray.fromhex(vec['hash']))
         assert crypto_hmac_sha512(msg, key=key) == out
+
+
+@pytest.mark.parametrize('hash,ctx_init,ctx_update,ctx_final,init_args', [
+    (crypto_blake2b,     crypto_blake2b_init,     crypto_blake2b_update,     crypto_blake2b_final,     {'key': b'', 'hash_size': 64}),
+    (crypto_sha512,      crypto_sha512_init,      crypto_sha512_update,      crypto_sha512_final,      {}),
+    (crypto_hmac_sha512, crypto_hmac_sha512_init, crypto_hmac_sha512_update, crypto_hmac_sha512_final, {'key': b''}),
+])
+@given(MSG)
+def test_crypto_hash_bytes_like(hash, ctx_init, ctx_update, ctx_final, init_args, msg):
+    for wrapper in [bytes, bytearray, memoryview]:
+        msg_wrapped = wrapper(msg)
+        digest = hash(msg=msg_wrapped, **init_args)
+
+        ctx = ctx_init(**init_args)
+        ctx_update(ctx, msg_wrapped)
+
+        assert digest == hash(msg=msg, **init_args)
+        assert digest == ctx_final(ctx)

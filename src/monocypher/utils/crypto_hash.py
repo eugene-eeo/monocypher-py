@@ -47,7 +47,7 @@ def crypto_blake2b_final(ctx):
     return bytes(hash)
 
 
-# Optional (Ed25519 + SHA256)
+# Optional (Ed25519 + SHA-512)
 
 def crypto_sha512(msg):
     hash = ffi.new('uint8_t[64]')
