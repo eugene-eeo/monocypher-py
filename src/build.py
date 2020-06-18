@@ -17,7 +17,7 @@ print(sources)
 
 ffi = cffi.FFI()
 ffi.set_source(
-    'monocypher._monocypher',
+    '_monocypher',
     '''
 #include <stdlib.h>
 #include <monocypher.h>

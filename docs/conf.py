@@ -24,6 +24,12 @@ author = 'Eeo Jun'
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
 
+import os
+import monocypher
+print(monocypher)
+print(os.listdir(os.path.dirname(monocypher.__file__)))
+import monocypher.bindings
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -63,8 +69,6 @@ html_theme_options = {
     'font_size': '16px',
     'show_relbars': True,
     'fixed_sidebar': True,
-    'sidebar_collapse': True,
-    'sidebar_includehidden': True,
     'github_user': 'eugene-eeo',
     'github_repo': 'monocypher-py',
     'github_button': True,
