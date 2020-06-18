@@ -28,11 +28,15 @@ without revealing their respective private keys.
    assert box_bob.shared_key() == box_alice.shared_key()
 
 
-A random nonce is automatically generated if not specified.
-Alternatively you can specify an explicit nonce.
-It does not have to be secret or random, but has to be unique.
-Using the same nonce twice with the same encryption key may allow decryption
-and forgeries.
+During encryption, a random nonce is automatically generated if not specified.
+Alternatively, you can specify an explicit nonce.
+It does not have to be secret or random (for instance, you can just
+use a message counter as the nonce in some protocols), but has to be unique.
+
+.. warning::
+
+   Using the same nonce twice with the same encryption key may allow decryption
+   and forgeries.
 
 
 .. code:: python
@@ -50,11 +54,11 @@ and forgeries.
    assert box_alice.decrypt(encrypted) == b"Hello there!"
 
 
-The above methods perform `authenticated` encryption using key-exchange;
+The above methods perform authenticated encryption using key-exchange;
 this means that the messages sent can be proven to be sent by you.
 If we want the receipient to be unable to verify the identity of the sender
 (but still ensure that the message wasn't tampered with),
-we use :py:class:`~monocypher.public.SealedBox`:
+use a :py:class:`~monocypher.public.SealedBox`:
 
 .. code:: python
 
@@ -117,7 +121,7 @@ Implementation
 
 :py:class:`~monocypher.public.Box` uses ``crypto_key_exchange`` from Monocypher,
 which uses X25519 and HChaCha20.
-:py:class:`~monocypher.public.SealedBox` uses the :py:class:`~monocypher.public.Box`
-internally, and the encryption format is as follows::
+:py:class:`~monocypher.public.SealedBox` uses the same algorithm,
+and the encryption format is as follows::
 
    ephemeral_pk || box(ephemeral_sk, receipient_pk, msg, nonce=(24 zeroes))

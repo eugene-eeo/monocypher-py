@@ -24,12 +24,6 @@ author = 'Eeo Jun'
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
 
-import os
-import monocypher
-print(monocypher)
-print(os.listdir(os.path.dirname(monocypher.__file__)))
-import monocypher.bindings
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -64,9 +58,9 @@ html_sidebars = {'**': [
 ]}
 html_theme = 'alabaster'
 html_theme_options = {
-    'head_font_family': 'sans-serif',
-    'font_family': 'sans-serif',
-    'font_size': '16px',
+    'head_font_family': 'Source Sans Pro, sans-serif',
+    'font_family': 'Source Sans Pro, sans-serif',
+    'code_font_family': "Source Code Pro, monospace",
     'show_relbars': True,
     'fixed_sidebar': True,
     'github_user': 'eugene-eeo',

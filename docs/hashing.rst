@@ -14,7 +14,7 @@ keys from passwords, please use a PDKF like Argon2.
    message authentication code). The returned digest will
    have length `hash_size`.
 
-   :param msg: The message (can be `bytes`, `memory`, or `bytearray`).
+   :param msg: The message (a bytes-like object).
    :param key: The key (:py:class:`~bytes`), between :py:obj:`.KEY_MIN` and :py:obj:`.KEY_MAX` long.
    :param hash_size: Digest length (:py:class:`~int`), between :py:obj:`.HASH_MIN` and :py:obj:`.HASH_MAX`.
                      When using Blake2b as a MAC, anything below 16 is discouraged,
@@ -78,6 +78,17 @@ HMAC-SHA512
 
 Incremental Interface
 ---------------------
+
+.. code:: python
+
+   from monocypher.hash import Blake2bContext
+   ctx = Blake2bContext()
+   with open('file', mode='rb') as f:
+       while True:
+           chunk = f.read(4096)
+           ctx.update(chunk)
+   digest = ctx.digest()
+
 
 .. autoclass:: monocypher.hash.Context
    :members:
