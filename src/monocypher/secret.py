@@ -105,11 +105,11 @@ class SecretBox(Encodable):
     def encrypt(self, msg, nonce=None):
         """
         Encrypt the given message `msg`, optionally with a specified `nonce`.
-        If the given `nonce` is `None`, then it is automatically generated.
-        See :class:`~monocypher.secret.EncryptedMessage` for details on how
-        the encrypted message is encoded.
+        If the given `nonce` is ``None``, then it is automatically generated.
+        See :class:`.EncryptedMessage` for details on how the encrypted message
+        is encoded.
 
-        :param msg: Message to encrypt (bytes).
+        :param msg: Message to encrypt (a bytes-like object).
         :param nonce: Optional :py:obj:`bytes` object of length :py:obj:`.NONCE_SIZE`.
 
         :rtype: :class:`.EncryptedMessage`
@@ -145,11 +145,12 @@ class SecretBox(Encodable):
     def decrypt(self, ciphertext, nonce=None):
         """
         Decrypt the given `ciphertext`, using the given `nonce` if supplied;
-        otherwise it is extracted from the `ciphertext`. The MAC is assumed
-        to be part of the `ciphertext`.
+        otherwise it is extracted from the `ciphertext`. The MAC should be
+        part of the `ciphertext` (see :py:meth:`.encrypt`,
+        alternatively use :py:meth:`.decrypt_raw`).
 
         :param ciphertext: A bytes-like object or :py:class:`.EncryptedMessage`.
-        :param nonce: The nonce if it isn't included in the ciphertext, or `None`.
+        :param nonce: Optional nonce if it isn't included in the ciphertext.
         """
         if nonce is None:
             # get from ciphertext, assume that it is encoded

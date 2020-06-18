@@ -8,18 +8,17 @@ __all__ = ('PublicKey', 'PrivateKey', 'Box')
 
 
 class PublicKey(Encodable):
-    """
-    X25519 public key.
-    This can be published.
-
-    :param pk: The public key (bytes).
-    """
-
     KEY_SIZE = 32
 
     __slots__ = ('_pk',)
 
     def __init__(self, pk):
+        """
+        X25519 public key.
+        This can be published.
+
+        :param pk: The public key (bytes).
+        """
         ensure_bytes_with_length('pk', pk, self.KEY_SIZE)
         self._pk = pk
 
@@ -110,13 +109,12 @@ class SealedBox:
     """
     SealedBox enables you to send a message decryptable by the private key
     variant of the `receipient_key`. The message will not be decryptable by
-    you after encryption, providing deniability (but with no authentication --
-    the receipient cannot be sure that it was you who sent the message).
+    you after encryption, providing deniability (but with no authentication,
+    the receipient cannot prove who sent the message).
 
-    :param receipient_key: A :py:class:`~monocypher.public.PublicKey` or
-                           :py:class:`~monocypher.public.PrivateKey` object.
-                           If the latter is provided, then the SealedBox is
-                           able to decrypt messages.
+    :param receipient_key: A :py:class:`.PublicKey` or :py:class:`.PrivateKey`
+                           object. If the latter is provided, then the SealedBox
+                           is able to decrypt messages.
     """
 
     __slots__ = ('_pk', '_sk')
@@ -134,12 +132,8 @@ class SealedBox:
     def encrypt(self, msg):
         """
         Encrypt the given `msg`. This works using a similar construction
-        as that from libsodium's `crypto_box_seal <https://libsodium.gitbook.io/doc/public-key_cryptography/sealed_boxes>`_;
-        (but using Monocypher's high level functions).
-        The idea is that an ephemeral private key is generated and used to
-        encrypt the message, which is decryptable only if you know the
-        receipient's private key and the ephemeral public key (and the
-        ephemeral public key hasn't been tampered with).
+        as that from libsodium's `crypto_box_seal <https://libsodium.gitbook.io/doc/public-key_cryptography/sealed_boxes>`_,
+        but using Monocypher's high level functions.
 
         :param msg: The message to encrypt (bytes).
         :rtype: :py:class:`bytes`
@@ -155,6 +149,8 @@ class SealedBox:
         """
         Decrypt the given `ciphertext`. Returns the original message if
         decryption was successful, otherwise raises :py:class:`~monocypher.secret.CryptoError`.
+        If the provided key was a :py:class:`.PublicKey`, raises a
+        :py:class:`RuntimeError`.
 
         :param ciphertext: The ciphertext to decrypt (bytes).
         :rtype: :py:class:`bytes`

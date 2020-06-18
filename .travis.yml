@@ -1,6 +1,8 @@
 language: python
 os:
     - linux
+env:
+    - HYPOTHESIS_PROFILE=ci
 python:
     - "3.5"
     - "3.6"

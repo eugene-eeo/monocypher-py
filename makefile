@@ -11,4 +11,7 @@ clean:
 	scripts/clean.sh
 
 html:
+	rm -rf docs/_build/html
 	cd docs && make html
+
+full: clean install_dev test html

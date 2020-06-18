@@ -1,8 +1,18 @@
 import pytest
-from pytest import raises
+from itertools import zip_longest
+from hypothesis import given
+from hypothesis.strategies import binary, integers
 from monocypher.utils import random
 from monocypher.bindings import crypto_blake2b, crypto_sha512, crypto_hmac_sha512
 from monocypher.hash import Blake2bContext, SHA512Context, HMACSHA512Context
+
+
+def grouper(iterable, n):
+    args = [iter(iterable)] * n
+    for x in zip_longest(*args, fillvalue=None):
+        x = [u for u in x if u is not None]
+        if x:
+            yield bytes(x)
 
 
 @pytest.mark.parametrize('fn, context, args', [
@@ -10,15 +20,27 @@ from monocypher.hash import Blake2bContext, SHA512Context, HMACSHA512Context
     [crypto_sha512,      SHA512Context,     {}],
     [crypto_hmac_sha512, HMACSHA512Context, {'key': random(256)}],
 ])
-def test_blake2b_context(fn, context, args):
-    digest = fn(msg=b'abc', **args)
-    ctx = context(**args)
-    ctx.update(b'a')
-    ctx.update(b'b')
-    ctx.update(b'c')
+@given(binary(), integers(min_value=1, max_value=256))
+def test_blake2b_context(fn, context, args, msg, chunk_size):
+    msg_size = len(msg)
 
-    assert ctx.digest() == digest
+    msg1 = msg[:msg_size // 2]
+    msg2 = msg[msg_size // 2:]
 
-    # we have already finalised!
-    with raises(RuntimeError):
-        ctx.update(b'more data')
+    digest1 = fn(msg=msg1, **args)
+    digest2 = fn(msg=msg, **args)
+
+    ctx1 = context(**args)
+
+    for chunk in grouper(msg1, chunk_size):
+        ctx1.update(chunk)
+
+    assert ctx1.digest() == digest1
+
+    ctx2 = ctx1.copy()
+
+    for chunk in grouper(msg2, chunk_size):
+        ctx2.update(chunk)
+
+    assert ctx1.digest() == digest1
+    assert ctx2.digest() == digest2
