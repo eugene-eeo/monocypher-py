@@ -56,7 +56,7 @@ matrix:
         - python --version
         - python -m pip install --upgrade pip
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
-install: pip install '.[tests]'
+install: pip install -r requirements.txt && pip install .
 script: make test
 after_success:
   bash <(curl -s https://codecov.io/bash)
