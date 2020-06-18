@@ -28,6 +28,12 @@ Reference
 .. autoclass:: monocypher.secret.SecretBox
    :members:
 
+   .. automethod: encode
+
+      Returns the encryption key as :py:class:`bytes`.
+
+      :rtype: :class:`bytes`
+
 .. autoclass:: monocypher.secret.EncryptedMessage
    :members:
 

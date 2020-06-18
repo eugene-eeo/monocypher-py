@@ -52,10 +52,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # pygments_style = 'trac'
 html_sidebars = {'**': [
     'about.html',
-    'navigation.html',
-    'relations.html',
-    'searchbox.html',
     'donate.html',
+    'navigation.html',
+    'searchbox.html',
 ]}
 html_theme = 'alabaster'
 html_theme_options = {
@@ -66,6 +65,9 @@ html_theme_options = {
     'fixed_sidebar': True,
     'sidebar_collapse': True,
     'sidebar_includehidden': True,
+    'github_user': 'eugene-eeo',
+    'github_repo': 'monocypher-py',
+    'github_button': True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
