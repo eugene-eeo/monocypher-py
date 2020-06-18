@@ -120,4 +120,4 @@ which uses X25519 and HChaCha20.
 :py:class:`~monocypher.public.SealedBox` uses the :py:class:`~monocypher.public.Box`
 internally, and the encryption format is as follows::
 
-   ephemeral_pk || box(ephemeral_sk, receipient_pk, nonce=(24 zeroes))
+   ephemeral_pk || box(ephemeral_sk, receipient_pk, msg, nonce=(24 zeroes))
