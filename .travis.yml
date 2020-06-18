@@ -1,4 +1,5 @@
 language: python
+os: linux
 # ===== Linux ======
 dist: xenial
 python:
@@ -6,7 +7,7 @@ python:
   - 3.6
   - 3.7
   - 3.8
-matrix:
+jobs:
   include:
     # ======= OSX ========
     - name: "Python 3.7.5 on macOS 10.14"
@@ -57,6 +58,6 @@ matrix:
         - python -m pip install --upgrade pip
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 install: pip install -r requirements.txt && pip install .
-script: make test
+script: python -m pytest --cov monocypher --cov-report term-missing
 after_success:
   bash <(curl -s https://codecov.io/bash)
