@@ -138,7 +138,7 @@ class SealedBox:
         If the provided key was a :py:class:`.PublicKey`, raises a
         :py:class:`RuntimeError`.
 
-        :param ciphertext: The ciphertext to decrypt (bytes).
+        :param ciphertext: The ciphertext to decrypt (bytes-like object).
         :rtype: :py:class:`bytes`
         """
         ensure(self._sk is not None, RuntimeError, 'SecretBox cannot decrypt using a PublicKey')

@@ -19,22 +19,15 @@ as input. In particular this means you can wipe secrets::
    secret_key = bytearray(32)
    open('secret.txt', mode='rb').readinto(secret_key)
 
-   crypto_sign(
-       secret_key,
-       b'hello world!',
-   )
+   crypto_sign(secret_key, b'hello world!')
    crypto_wipe(secret_key)
    assert bytes(secret_key) == bytes(32)
 
 However, there are some pitfalls in the name of convenience -- e.g.,
 if you use :py:func:`~monocypher.bindings.crypto_from_ed25519_private`,
 it returns a :py:class:`bytes` object containing the derived X25519
-private key.
-
-.. note::
-
-   If you are doing anything that needs really fine-grained
-   level of control over memory, please just use C instead.
+private key -- if you need that much control over memory, you probably
+know what you're doing anyways.
 
 .. automodule:: monocypher.bindings
    :members:
