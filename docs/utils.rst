@@ -3,15 +3,11 @@ Utilities
 
 .. module:: monocypher.utils
 
+
 Generating Random Bytes
 -----------------------
 
 .. autofunction:: monocypher.utils.random
-
-Copying Contexts
-----------------
-
-.. autofunction:: monocypher.utils.copy_context
 
 
 Constant-Time Comparisons
@@ -33,3 +29,9 @@ are equal, and ``False`` otherwise.
 
    from monocypher.cmp import crypto_verify16
    crypto_verify16(b'a....a', b'a....a')
+
+
+Copying Contexts
+----------------
+
+.. autofunction:: monocypher.utils.copy_context

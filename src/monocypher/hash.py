@@ -1,4 +1,4 @@
-from monocypher._monocypher import ffi
+from monocypher.utils import copy_context
 from monocypher.utils.crypto_hash import (
     crypto_blake2b,
     crypto_blake2b_init, crypto_blake2b_update, crypto_blake2b_final,
@@ -37,15 +37,7 @@ class Context:
         self._ctx = ctx
 
     def _copy_ctx(self):
-        ctx_new  = ffi.new(self._ctx_type)
-        ctx_void = ffi.cast('uint8_t *', self._ctx)
-        dst_void = ffi.cast('uint8_t *', ctx_new)
-        ffi.memmove(
-            dst_void,
-            ctx_void,
-            ffi.sizeof(ctx_new[0]),
-        )
-        return ctx_new
+        return copy_context(self._ctx, self._ctx_type)
 
     def copy(self):
         """
