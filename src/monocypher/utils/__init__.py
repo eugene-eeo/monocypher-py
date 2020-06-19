@@ -56,12 +56,17 @@ def ensure(cond, exc, *args):
         raise exc(*args)
 
 
-BYTES_LIKE = (bytes, memoryview, bytearray)
-
-
-def ensure_bytes_with_length(name, value, length, bytes_like=BYTES_LIKE):
+def ensure_length(name, value, length):
     ensure(
-        isinstance(value, bytes_like) and len(value) == length,
+        len(value) == length,
+        TypeError,
+        '{} have length {}'.format(name, length),
+    )
+
+
+def ensure_bytes_with_length(name, value, length):
+    ensure(
+        isinstance(value, bytes) and len(value) == length,
         TypeError,
         '{} must be bytes with length {}'.format(name, length),
     )

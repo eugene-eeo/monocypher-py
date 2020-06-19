@@ -1,14 +1,20 @@
+from monocypher.utils import ensure_length
 from monocypher._monocypher import lib, ffi
 
 
 def crypto_sign_public_key(secret_key):
+    ensure_length('secret_key', secret_key, 32)
+
     sk = ffi.from_buffer('uint8_t[32]', secret_key)
     pk = ffi.new('uint8_t[32]')
+
     lib.crypto_sign_public_key(pk, sk)
     return bytes(pk)
 
 
 def crypto_sign(secret_key, msg):
+    ensure_length('secret_key', secret_key, 32)
+
     sk  = ffi.from_buffer('uint8_t[32]', secret_key)
     msg = ffi.from_buffer('uint8_t[]', msg)
     sig = ffi.new('uint8_t[64]')
@@ -23,6 +29,9 @@ def crypto_sign(secret_key, msg):
 
 
 def crypto_check(sig, public_key, msg):
+    ensure_length('sig', sig, 64)
+    ensure_length('public_key', public_key, 32)
+
     sig = ffi.from_buffer('uint8_t[64]', sig)
     pk  = ffi.from_buffer('uint8_t[32]', public_key)
     msg = ffi.from_buffer('uint8_t[]', msg)
@@ -32,6 +41,8 @@ def crypto_check(sig, public_key, msg):
 
 
 def crypto_from_eddsa_private(eddsa):
+    ensure_length('eddsa', eddsa, 32)
+
     eddsa  = ffi.from_buffer('uint8_t[32]', eddsa)
     x25519 = ffi.new('uint8_t[32]')
 
@@ -40,6 +51,8 @@ def crypto_from_eddsa_private(eddsa):
 
 
 def crypto_from_eddsa_public(eddsa):
+    ensure_length('eddsa', eddsa, 32)
+
     eddsa  = ffi.from_buffer('uint8_t[32]', eddsa)
     x25519 = ffi.new('uint8_t[32]')
 
@@ -50,6 +63,8 @@ def crypto_from_eddsa_public(eddsa):
 # Optional interface (Ed25519)
 
 def crypto_ed25519_public_key(secret_key):
+    ensure_length('secret_key', secret_key, 32)
+
     sk = ffi.from_buffer('uint8_t[32]', secret_key)
     pk = ffi.new('uint8_t[32]')
 
@@ -58,6 +73,8 @@ def crypto_ed25519_public_key(secret_key):
 
 
 def crypto_ed25519_sign(secret_key, msg):
+    ensure_length('secret_key', secret_key, 32)
+
     msg = ffi.from_buffer('uint8_t[]', msg)
     sig = ffi.new('uint8_t[64]')
     pk  = ffi.new('uint8_t[32]')
@@ -70,6 +87,9 @@ def crypto_ed25519_sign(secret_key, msg):
 
 
 def crypto_ed25519_check(sig, public_key, msg):
+    ensure_length('sig', sig, 64)
+    ensure_length('public_key', public_key, 32)
+
     sig = ffi.from_buffer('uint8_t[64]', sig)
     pk  = ffi.from_buffer('uint8_t[32]', public_key)
     msg = ffi.from_buffer('uint8_t[]', msg)
@@ -78,6 +98,8 @@ def crypto_ed25519_check(sig, public_key, msg):
 
 
 def crypto_from_ed25519_private(ed25519):
+    ensure_length('ed25519', ed25519, 32)
+
     ed25519 = ffi.from_buffer('uint8_t[32]', ed25519)
     x25519  = ffi.new('uint8_t[32]')
     lib.crypto_from_ed25519_private(x25519, ed25519)
@@ -85,6 +107,8 @@ def crypto_from_ed25519_private(ed25519):
 
 
 def crypto_from_ed25519_public(ed25519):
+    ensure_length('ed25519', ed25519, 32)
+
     ed25519 = ffi.from_buffer('uint8_t[32]', ed25519)
     x25519  = ffi.new('uint8_t[32]')
     lib.crypto_from_ed25519_public(x25519, ed25519)
