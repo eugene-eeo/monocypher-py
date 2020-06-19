@@ -86,6 +86,8 @@ Incremental Interface
    with open('file', mode='rb') as f:
        while True:
            chunk = f.read(4096)
+           if chunk == b'':
+               break
            ctx.update(chunk)
    digest = ctx.digest()
 
