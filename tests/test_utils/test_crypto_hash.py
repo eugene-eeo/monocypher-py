@@ -40,7 +40,7 @@ def test_crypto_sha512(msg, chunk_size):
     ctx = crypto_sha512_init()
 
     for chunk in chunked(msg, chunk_size):
-        crypto_sha512_update(ctx, msg)
+        crypto_sha512_update(ctx, chunk)
     assert crypto_sha512_final(ctx) == digest
 
 
@@ -50,7 +50,7 @@ def test_crypto_hmac_sha512(msg, key, chunk_size):
     ctx = crypto_hmac_sha512_init(key)
 
     for chunk in chunked(msg, chunk_size):
-        crypto_hmac_sha512_update(ctx, msg)
+        crypto_hmac_sha512_update(ctx, chunk)
     assert crypto_hmac_sha512_final(ctx) == digest
 
 

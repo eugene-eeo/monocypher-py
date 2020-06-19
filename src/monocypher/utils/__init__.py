@@ -41,8 +41,8 @@ def copy_context(ctx_ptr, type):
     :param type: Type of `ctx_ptr`.
     """
     dst_ptr  = ffi.new(type)
-    ctx_void = ffi.cast('uint8_t *', ctx_ptr)
     dst_void = ffi.cast('uint8_t *', dst_ptr)
+    ctx_void = ffi.cast('uint8_t *', ctx_ptr)
     ffi.memmove(
         dst_void,
         ctx_void,
