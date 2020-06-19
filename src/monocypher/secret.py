@@ -1,4 +1,4 @@
-from monocypher.utils import ensure_bytes_with_length, Encodable, random
+from monocypher.utils import ensure_bytes_with_length, Encodable, HashEq32, random
 from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock
 
 
@@ -67,7 +67,7 @@ class EncryptedMessage(bytes):
         return self.ciphertext[SecretBox.MAC_SIZE:]
 
 
-class SecretBox(Encodable):
+class SecretBox(Encodable, HashEq32):
     """
     Encrypts messages using XChacha20, and authenticates them using Poly1305.
     The `key` parameter can be produced in different ways,

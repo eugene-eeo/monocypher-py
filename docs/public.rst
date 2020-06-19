@@ -1,3 +1,5 @@
+.. highlight:: python
+
 Key Exchange
 ============
 
@@ -5,33 +7,34 @@ Key Exchange can be used to exchange a shared key that only the two parties
 know (so that they can communicate using symmetric encryption),
 without revealing their respective private keys.
 
-.. code:: python
+::
 
-   from monocypher.public import PrivateKey, Box
+    from monocypher.public import PrivateKey, Box
 
-   # Alice generates a private key; this must be kept secret!
-   sk_alice = PrivateKey.generate()
-   # This can be sent to anyone (in particular, Bob).
-   pk_alice = sk_alice.public_key
+    # Alice generates a private key; this must be kept secret!
+    sk_alice = PrivateKey.generate()
+    # This can be sent to anyone (in particular, Bob).
+    pk_alice = sk_alice.public_key
 
-   # Bob generates a private key, and sends his public key to Alice.
-   sk_bob = PrivateKey.generate()
-   pk_bob = sk_bob.public_key
+    # Bob generates a private key, and sends his public key to Alice.
+    sk_bob = PrivateKey.generate()
+    pk_bob = sk_bob.public_key
 
-   # Bob and Alice can exchange keys --
-   #  1. Alice gives Bob her public key,
-   #  2. Bob gives Alice his public key.
-   box_bob   = Box(sk_bob, pk_alice)
-   box_alice = Box(sk_alice, pk_bob)
+    # Bob and Alice can exchange keys --
+    #  1. Alice gives Bob her public key,
+    #  2. Bob gives Alice his public key.
+    box_bob   = Box(sk_bob, pk_alice)
+    box_alice = Box(sk_alice, pk_bob)
 
-   # They then both have the same key:
-   assert box_bob.shared_key() == box_alice.shared_key()
+    # They then both have the same key:
+    assert box_bob.shared_key() == box_alice.shared_key()
 
 
 During encryption, a random nonce is automatically generated if not specified.
 Alternatively, you can specify an explicit nonce.
 It does not have to be secret or random (for instance, you can just
-use a message counter as the nonce in some protocols), but has to be unique.
+use the message counter as the nonce in some protocols),
+but has to be unique.
 
 .. warning::
 
@@ -39,19 +42,19 @@ use a message counter as the nonce in some protocols), but has to be unique.
    and forgeries.
 
 
-.. code:: python
+::
 
-   message = b"Hello there!"
+    message = b"Hello there!"
 
-   # Automatically generated nonce:
-   encrypted = box_bob.encrypt(message)
-   assert box_alice.decrypt(encrypted) == b"Hello there!"
+    # Automatically generated nonce:
+    encrypted = box_bob.encrypt(message)
+    assert box_alice.decrypt(encrypted) == b"Hello there!"
 
-   # Explicitly generated nonce:
-   import os
-   nonce = os.urandom(Box.NONCE_SIZE)
-   encrypted = box_bob.encrypt(message, nonce)
-   assert box_alice.decrypt(encrypted) == b"Hello there!"
+    # Explicitly generated nonce:
+    from monocypher.utils import random
+    nonce = random(Box.NONCE_SIZE)
+    encrypted = box_bob.encrypt(message, nonce)
+    assert box_alice.decrypt(encrypted) == b"Hello there!"
 
 
 The above methods perform authenticated encryption using key-exchange;
@@ -60,18 +63,18 @@ If we want the receipient to be unable to verify the identity of the sender
 (but still ensure that the message wasn't tampered with),
 use a :py:class:`~monocypher.public.SealedBox`:
 
-.. code:: python
+::
 
-   from monocypher.public import SealedBox
+    from monocypher.public import SealedBox
 
-   sbox_alice = SealedBox(pk_bob)
-   # once we encrypt this message, we are unable to decrypt the resulting
-   # ciphertext, even though we created it.
-   ciphertext = sbox_alice.encrypt(b'the sequels are better')
+    sbox_alice = SealedBox(pk_bob)
+    # Once we encrypt this message, we are unable to decrypt the
+    # ciphertext, even though we created it.
+    ciphertext = sbox_alice.encrypt(b'the sequels are better')
 
-   # bob receives this ciphertext and decrypts it using his private key.
-   sbox_bob = SealedBox(sk_bob)
-   assert sbox_bob.decrypt(ciphertext) == b'the ...'
+    # Bob can decrypt it using his private key.
+    sbox_bob = SealedBox(sk_bob)
+    assert sbox_bob.decrypt(ciphertext) == b'the ...'
 
 
 Reference
@@ -108,11 +111,30 @@ Reference
    :members:
 
 
+Extras
+------
+
+The :py:class:`~monocypher.public.PrivateKey` and :py:class:`~monocypher.public.PublicKey`
+classes both implement equality (between objects of the same type)
+and conversion to :py:class:`bytes`, as well as hashing::
+
+    >>> sk_1 = PrivateKey.generate()
+    >>> sk_2 = PrivateKey.generate()
+    >>> sk_1 == sk_2
+    False
+    >>> sk_1.public_key == PublicKey(bytes(sk_1.public_key))
+    True
+    >>> hash(sk_1)
+    ...
+    >>> hash(sk_1.public_key)
+    ...
+
+
 Implementation
 --------------
 
-:py:class:`~monocypher.public.Box` uses ``crypto_key_exchange`` from Monocypher,
-which uses X25519 and HChaCha20.
+:py:class:`~monocypher.public.Box`'s key derivation uses ``crypto_key_exchange``
+from Monocypher, which uses X25519 and HChaCha20.
 :py:class:`~monocypher.public.SealedBox` uses the same algorithm,
 and the encryption format is as follows::
 

@@ -40,8 +40,8 @@ User Guide
 
    public
    secret
-   hashing
    signing
+   hashing
    pwhash
    utils
    bindings

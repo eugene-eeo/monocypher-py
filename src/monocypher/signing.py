@@ -1,5 +1,4 @@
-from monocypher.utils import ensure_bytes_with_length, Encodable, random
-from monocypher.utils.crypto_cmp import crypto_verify32
+from monocypher.utils import ensure_bytes_with_length, Encodable, HashEq32, random
 from monocypher.utils.crypto_sign import (
     crypto_check, crypto_sign, crypto_sign_public_key,
     crypto_from_eddsa_private, crypto_from_eddsa_public,
@@ -46,36 +45,22 @@ class SignedMessage(bytes):
         return self._msg
 
 
-class VerifyKey(Encodable):
+class VerifyKey(Encodable, HashEq32):
     """
     EdDSA public key. This can be published.
 
     :param pk: The public key (:py:class:`~bytes`),
                should be :py:obj:`.KEY_SIZE` bytes long.
-
-    .. data:: KEY_SIZE
-
-       Length of a public key.
-
-    .. data:: SIG_SIZE
-
-       Length of a signature.
     """
 
-    KEY_SIZE = 32
-    SIG_SIZE = 64
+    KEY_SIZE = 32  #: Length of a public key.
+    SIG_SIZE = 64  #: Length of a signature.
 
     __slots__ = ('_pk',)
 
     def __init__(self, pk):
         ensure_bytes_with_length('pk', pk, self.KEY_SIZE)
         self._pk = pk
-
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and crypto_verify32(other._pk, self._pk)
-
-    def __hash__(self):
-        return hash(self._pk)
 
     def verify(self, signed, sig=None):
         """
@@ -112,36 +97,22 @@ class VerifyKey(Encodable):
         return PublicKey(crypto_from_eddsa_public(self._pk))
 
 
-class SigningKey(Encodable):
+class SigningKey(Encodable, HashEq32):
     """
     EdDSA private key. This should be kept secret.
 
     :param sk: The secret key (:py:class:`~bytes`),
                should be :py:obj:`.KEY_SIZE` bytes long.
-
-    .. data:: KEY_SIZE
-
-       Length of a secret key.
-
-    .. data:: SIG_SIZE
-
-       Length of a signature.
     """
 
-    KEY_SIZE = 32
-    SIG_SIZE = 64
+    KEY_SIZE = 32  #: Length of a secret key.
+    SIG_SIZE = 64  #: Length of a signature.
 
     __slots__ = ('_sk',)
 
     def __init__(self, sk):
         ensure_bytes_with_length('sk', sk, self.KEY_SIZE)
         self._sk = sk
-
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and crypto_verify32(other._sk, self._sk)
-
-    def __hash__(self):
-        return hash(self._sk)
 
     @classmethod
     def generate(cls):

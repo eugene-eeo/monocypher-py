@@ -28,7 +28,7 @@ Reference
 .. autoclass:: monocypher.secret.SecretBox
    :members:
 
-   .. automethod: encode
+   .. automethod:: encode
 
       Returns the encryption key as :py:class:`bytes`.
 
@@ -39,3 +39,30 @@ Reference
 
 .. autoexception:: monocypher.secret.CryptoError
    :members:
+
+
+Extras
+------
+
+The :py:class:`~monocypher.secret.SecretBox` class,
+and by extension :py:class:`~monocypher.public.Box`
+implements equality (between objects of the same type)
+and conversion to :py:class:`bytes`, as well as hashing::
+
+    >>> key = random(SecretBox.KEY_SIZE)
+    >>> sbox = SecretBox(key)
+    >>> sbox == SecretBox(key)
+    False
+    >>> bytes(sbox) == key
+    True
+    >>> hash(sbox)
+    ...
+
+
+Implementation
+--------------
+
+:py:class:`~monocypher.secret.SecretBox` uses the 
+``crypto_lock`` functions from Monocypher, which
+implement RFC 8439 (ChaCha20 and Poly1305 for IETF Protocols),
+using XChaCha20 instead of ChaCha20.

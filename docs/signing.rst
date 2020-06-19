@@ -55,9 +55,33 @@ Reference
 .. autoexception:: monocypher.signing.SignatureError
 
 
+Extras
+------
+
+The :py:class:`~monocypher.signing.SigningKey` and :py:class:`~monocypher.signing.VerifyKey`
+classes both implement equality (between objects of the same type)
+and conversion to :py:class:`bytes`, as well as hashing::
+
+    >>> sk_1 = SigningKey.generate()
+    >>> sk_2 = SigningKey.generate()
+    >>> sk_1 == sk_2
+    False
+    >>> sk_1.verify_key == VerifyKey(bytes(sk_1.verify_key))
+    True
+    >>> hash(sk_1)
+    ...
+    >>> hash(sk_1.verify_key)
+    ...
+
+
 Implementation
 --------------
 
 :py:func:`~monocypher.signing.SigningKey.sign` and :py:func:`~monocypher.signing.VerifyKey.verify`
 both use PureEdDSA with Curve25519 and Blake2b, (RFC 8032).
 This is the same as Ed25519 with Blake2b instead of SHA-512.
+
+:py:func:`~monocypher.signing.SigningKey.to_private_key` and :py:func:`~monocypher.signing.VerifyKey.to_public_key`
+use the ``crypto_from_eddsa_private`` and ``crypto_from_eddsa_public``
+functions from Monocypher respectively, which converts from
+EdDSA keys to X25519 keys.

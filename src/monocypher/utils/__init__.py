@@ -85,3 +85,21 @@ class Encodable:
 
     def encode(self):
         return bytes(self)
+
+    def __hash__(self):
+        return hash(bytes(self))
+
+
+class HashEq32:
+    __slots__ = ()
+
+    def __hash__(self):
+        return hash(bytes(self))
+
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+        return crypto_verify32(bytes(self), bytes(other))
+
+
+from monocypher.utils.crypto_cmp import crypto_verify32  # noqa: E402

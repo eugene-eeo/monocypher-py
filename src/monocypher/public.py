@@ -1,13 +1,12 @@
-from monocypher.utils import ensure_bytes_with_length, ensure, Encodable, random
+from monocypher.utils import ensure_bytes_with_length, ensure, Encodable, HashEq32, random
 from monocypher.utils.crypto_public import crypto_key_exchange, crypto_key_exchange_public_key
-from monocypher.utils.crypto_cmp import crypto_verify32
 from monocypher.secret import SecretBox
 
 
 __all__ = ('PublicKey', 'PrivateKey', 'Box')
 
 
-class PublicKey(Encodable):
+class PublicKey(Encodable, HashEq32):
     """
     X25519 public key. This can be published.
 
@@ -25,14 +24,8 @@ class PublicKey(Encodable):
     def __bytes__(self):
         return self._pk
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and crypto_verify32(other._pk, self._pk)
 
-    def __hash__(self):
-        return hash(self._pk)
-
-
-class PrivateKey(Encodable):
+class PrivateKey(Encodable, HashEq32):
     """
     X25519 private key. This **must** be kept secret.
 
@@ -67,12 +60,6 @@ class PrivateKey(Encodable):
 
     def __bytes__(self):
         return self._sk
-
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and crypto_verify32(other._sk, self._sk)
-
-    def __hash__(self):
-        return hash(self._sk)
 
 
 class Box(SecretBox):
