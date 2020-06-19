@@ -18,13 +18,13 @@ The output is suitable for use as the key for the :py:class:`~monocypher.secret.
    use the :py:func:`monocypher.cmp.crypto_verify32` or
    :py:func:`monocypher.cmp.crypto_verify64` functions.
 
-   :param password: Password (:py:class:`bytes`).
-   :param salt: Salt (:py:class:`bytes`), at least 8 bytes.
+   :param password: Password (bytes-like object).
+   :param salt: Salt (bytes-like object), at least 8 bytes.
    :param nb_blocks: Memory cost in KiB; >= 8. (:py:class:`int`)
    :param nb_iterations: Time cost; >= 1. (:py:class:`int`)
    :param hash_size: Length of hash in bytes, >= 4. (:py:class:`int`)
-   :param key: Optional key (:py:class:`bytes`).
-   :param ad: Optional additional data (:py:class:`bytes`)
+   :param key: Optional key (bytes-like object).
+   :param ad: Optional additional data (bytes-like object)
    :rtype: :py:class:`bytes`
 
 .. note::
