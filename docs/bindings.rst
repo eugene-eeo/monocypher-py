@@ -1,3 +1,5 @@
+.. highlight:: python
+
 Bindings
 ========
 
@@ -9,11 +11,30 @@ returns whether the two byte strings match, etc. Additionally they are
 easier to use since you don't have to pass in the accompanying length
 for each parameter.
 
-For parameters which can have unbounded length (except for ``key``,
-``salt``, and arguments to :py:func:`~monocypher.bindings.crypto_argon2i`),
-you can pass in a `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_,
-unless mentioned otherwise. Otherwise, you need to pass in a
-:py:class:`~bytes` object with the correct length.
+All parameters which are expected to be ``uint8_t[]`` or ``uint8_t[K]``
+in the Monocypher API can receive a
+`bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_
+as input. In particular this means you can wipe secrets::
+
+   secret_key = bytearray(32)
+   open('secret.txt', mode='rb').readinto(secret_key)
+
+   crypto_sign(
+       secret_key,
+       b'hello world!',
+   )
+   crypto_wipe(secret_key)
+   assert bytes(secret_key) == bytes(32)
+
+However, there are some pitfalls in the name of convenience -- e.g.,
+if you use :py:func:`~monocypher.bindings.crypto_from_ed25519_private`,
+it returns a :py:class:`bytes` object containing the derived X25519
+private key.
+
+.. note::
+
+   If you are doing anything that needs really fine-grained
+   level of control over memory, please just use C instead.
 
 .. automodule:: monocypher.bindings
    :members:

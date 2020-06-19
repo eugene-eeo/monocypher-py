@@ -1,4 +1,3 @@
-from monocypher.utils import ensure_bytes_with_length
 from monocypher._monocypher import lib, ffi
 
 
@@ -6,13 +5,12 @@ def crypto_lock(key, nonce, msg, ad=b''):
     """
     :returns: (bytes(mac), bytes(ciphertext))
     """
-    ensure_bytes_with_length('key', key, 32)
-    ensure_bytes_with_length('nonce', nonce, 24)
-
-    mac = ffi.new('uint8_t[16]')
-    ct  = ffi.new('uint8_t[]', len(msg))
-    msg = ffi.from_buffer('uint8_t[]', msg)
-    ad  = ffi.from_buffer('uint8_t[]', ad)
+    key   = ffi.from_buffer('uint8_t[32]', key)
+    nonce = ffi.from_buffer('uint8_t[24]', nonce)
+    mac   = ffi.new('uint8_t[16]')
+    ct    = ffi.new('uint8_t[]', len(msg))
+    msg   = ffi.from_buffer('uint8_t[]', msg)
+    ad    = ffi.from_buffer('uint8_t[]', ad)
 
     lib.crypto_lock_aead(
         mac,
@@ -29,10 +27,9 @@ def crypto_unlock(key, mac, nonce, ciphertext, ad=b''):
     """
     :returns: None or bytes(msg)
     """
-    ensure_bytes_with_length('key', key, 32)
-    ensure_bytes_with_length('mac', mac, 16)
-    ensure_bytes_with_length('nonce', nonce, 24)
-
+    key   = ffi.from_buffer('uint8_t[32]', key)
+    mac   = ffi.from_buffer('uint8_t[16]', mac)
+    nonce = ffi.from_buffer('uint8_t[24]', nonce)
     ct = ffi.from_buffer('uint8_t[]', ciphertext)
     ad = ffi.from_buffer('uint8_t[]', ad)
     pt = ffi.new('uint8_t[]', len(ciphertext))

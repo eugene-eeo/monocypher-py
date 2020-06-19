@@ -56,9 +56,12 @@ def ensure(cond, exc, *args):
         raise exc(*args)
 
 
-def ensure_bytes_with_length(name, value, length):
+BYTES_LIKE = (bytes, memoryview, bytearray)
+
+
+def ensure_bytes_with_length(name, value, length, bytes_like=BYTES_LIKE):
     ensure(
-        isinstance(value, bytes) and len(value) == length,
+        isinstance(value, bytes_like) and len(value) == length,
         TypeError,
         '{} must be bytes with length {}'.format(name, length),
     )
@@ -69,14 +72,6 @@ def ensure_range(name, value, min, max=float('+inf')):
         isinstance(value, int) and (min <= value <= max),
         TypeError,
         '{name} must be an integer between {min} and {max}'.format(name=name, min=min, max=max),
-    )
-
-
-def ensure_context(name, value, type, how):
-    ensure(
-        ffi.typeof(value).cname == type,
-        TypeError,
-        '{} should be from {}'.format(name, how),
     )
 
 

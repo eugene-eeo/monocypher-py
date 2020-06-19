@@ -1,3 +1,4 @@
+from ._monocypher import lib, ffi
 from .utils.crypto_aead import crypto_lock, crypto_unlock
 from .utils.crypto_cmp import crypto_verify16, crypto_verify32, crypto_verify64
 from .utils.crypto_hash import (
@@ -39,6 +40,7 @@ __all__ = (
     'crypto_argon2i',
     'crypto_sign_public_key', 'crypto_sign', 'crypto_check',
     'crypto_from_eddsa_private', 'crypto_from_eddsa_public',
+    'crypto_wipe',
 
     # optional code
     'crypto_sha512',
@@ -51,3 +53,8 @@ __all__ = (
     'crypto_from_ed25519_private',
     'crypto_from_ed25519_public',
 )
+
+
+def crypto_wipe(buf):
+    buf = ffi.from_buffer('uint8_t[]', buf)
+    lib.crypto_wipe(buf, len(buf))
