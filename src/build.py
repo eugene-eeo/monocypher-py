@@ -20,7 +20,7 @@ ffi.set_source(
     ''',
     sources=sources,
     include_dirs=[include_dir],
-    extra_compile_args=['-O3', '-march=native'],
+    extra_compile_args=['-std=c99', '-O3', '-march=native'],
 )
 with open(header_file, 'r') as fp:
     ffi.cdef(fp.read())
