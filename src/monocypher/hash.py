@@ -70,7 +70,7 @@ class Context:
 class Blake2bContext(Context):
     """
     Subclass of :py:class:`.Context` implementing the Blake2b hash.
-    Parameters have the same meaning as :py:func:`.blake2b`
+    Parameters have the same meaning as :py:func:`.blake2b`.
     """
 
     __slots__ = ()

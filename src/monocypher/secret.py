@@ -48,7 +48,7 @@ class EncryptedMessage(bytes):
         """
         Returns the detached mac.
 
-        :rtype: :class:`~bytes`
+        :rtype: :class:`bytes`
         """
         return self.ciphertext[:SecretBox.MAC_SIZE]
 
@@ -74,24 +74,12 @@ class SecretBox(Encodable):
     e.g. via key exchange (e.g. :py:class:`~monocypher.public.Box`),
     or password key derivation (:py:func:`~monocypher.pwhash.argon2i`).
 
-    :param key: A bytes object of length :py:obj:`.KEY_SIZE`.
-
-    .. data:: KEY_SIZE
-
-       Length of a valid key in bytes.
-
-    .. data:: NONCE_SIZE
-
-       Length of a valid nonce in bytes.
-
-    .. data:: MAC_SIZE
-
-       Length of a valid MAC in bytes.
+    :param key: A :py:class:`bytes` object of length :py:obj:`.KEY_SIZE`.
     """
 
-    KEY_SIZE   = 32
-    NONCE_SIZE = 24
-    MAC_SIZE   = 16
+    KEY_SIZE   = 32  #: Length of a valid key in bytes.
+    NONCE_SIZE = 24  #: Length of a valid nonce in bytes.
+    MAC_SIZE   = 16  #: Length of a valid MAC in bytes.
 
     __slots__ = ('_key',)
 

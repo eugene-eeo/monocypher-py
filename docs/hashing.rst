@@ -96,10 +96,13 @@ Incremental Interface
    :members:
 
 .. autoclass:: monocypher.hash.Blake2bContext
+   :show-inheritance:
    :members:
 
 .. autoclass:: monocypher.hash.SHA512Context()
+   :show-inheritance:
    :members:
 
 .. autoclass:: monocypher.hash.HMACSHA512Context
+   :show-inheritance:
    :members:

@@ -1,11 +1,14 @@
-all: install_dev test
+dev: install_dev test
 
 install_dev:
 	-pip uninstall -y monocypher-py
 	pip install --editable .[tests,docs]
 
 test:
-	py.test --cov monocypher --cov-report term-missing
+	py.test
+
+test_ci:
+	HYPOTHESIS_PROFILE=ci py.test
 
 clean:
 	scripts/clean.sh
@@ -14,4 +17,4 @@ html:
 	rm -rf docs/_build/html
 	cd docs && make html
 
-full: clean install_dev test html
+full: clean install_dev test_ci html
