@@ -2,7 +2,7 @@ dev: install_dev test
 
 install_dev:
 	-pip uninstall -y monocypher-py
-	pip install --editable .[tests,docs]
+	pip install --verbose --editable .[tests,docs]
 
 test:
 	py.test
