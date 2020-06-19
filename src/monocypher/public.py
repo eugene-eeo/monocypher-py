@@ -8,17 +8,17 @@ __all__ = ('PublicKey', 'PrivateKey', 'Box')
 
 
 class PublicKey(Encodable):
-    KEY_SIZE = 32
+    """
+    X25519 public key. This can be published.
+
+    :param pk: The public key (:py:class:`bytes`).
+    """
+
+    KEY_SIZE = 32  #: Length of a public key in bytes.
 
     __slots__ = ('_pk',)
 
     def __init__(self, pk):
-        """
-        X25519 public key.
-        This can be published.
-
-        :param pk: The public key (bytes).
-        """
         ensure_bytes_with_length('pk', pk, self.KEY_SIZE)
         self._pk = pk
 
@@ -34,13 +34,12 @@ class PublicKey(Encodable):
 
 class PrivateKey(Encodable):
     """
-    X25519 private key.
-    This **must** be kept secret.
+    X25519 private key. This **must** be kept secret.
 
-    :param sk: The private key (bytes).
+    :param sk: The private key (:py:class:`bytes`).
     """
 
-    KEY_SIZE = 32
+    KEY_SIZE = 32  #: Length of a private key in bytes.
 
     __slots__ = ('_sk',)
 
@@ -51,18 +50,18 @@ class PrivateKey(Encodable):
     @classmethod
     def generate(cls):
         """
-        Generates a random :class:`~monocypher.public.PrivateKey` object.
+        Generates a random :class:`.PrivateKey` object.
 
-        :rtype: :class:`~monocypher.public.PrivateKey`
+        :rtype: :class:`.PrivateKey`
         """
         return cls(random(cls.KEY_SIZE))
 
     @property
     def public_key(self):
         """
-        Returns the corresponding :class:`~monocypher.public.PublicKey` object.
+        Returns the corresponding :class:`.PublicKey` object.
 
-        :rtype: :class:`~monocypher.public.PublicKey`
+        :rtype: :class:`.PublicKey`
         """
         return PublicKey(crypto_key_exchange_public_key(self._sk))
 
@@ -83,8 +82,8 @@ class Box(SecretBox):
     The shared key is computed using X25519 and HChaCha20.
     For details see `Monocypher's documentation <https://monocypher.org/manual/key_exchange>`_.
 
-    :param your_sk: Your private key (a :class:`~monocypher.public.PrivateKey` object).
-    :param their_pk: Their public key (a :class:`~monocypher.public.PublicKey` object).
+    :param your_sk: Your private key (a :class:`.PrivateKey` object).
+    :param their_pk: Their public key (a :class:`.PublicKey` object).
     """
 
     __slots__ = ()

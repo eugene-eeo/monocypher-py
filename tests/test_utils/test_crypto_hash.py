@@ -14,51 +14,43 @@ from monocypher.utils.crypto_hash import (
     crypto_hmac_sha512_init, crypto_hmac_sha512_update, crypto_hmac_sha512_final,
 )
 
-from tests.utils import get_vectors
+from tests.utils import get_vectors, chunked
 
 
 MSG         = binary()
 BLAKE2B_KEY = binary(min_size=BLAKE2B_KEY_MIN, max_size=BLAKE2B_KEY_MAX)
 SHA512_KEY  = binary()
 HASH_SIZE   = integers(min_value=BLAKE2B_HASH_MIN, max_value=BLAKE2B_HASH_MAX)
-CHUNKS      = integers(min_value=1, max_value=200)
+CHUNK_SIZE  = integers(min_value=1, max_value=200)
 
 
-def chunked_update(ctx, update_func, msg, chunks):
-    chunk_size = len(msg) // chunks
-    for i in range(chunks):
-        chunk = (
-            msg if i == chunks - 1 else
-            msg[:chunk_size]
-        )
-        update_func(ctx, chunk)
-        msg = msg[chunk_size:]
-
-
-@given(MSG, BLAKE2B_KEY, HASH_SIZE, CHUNKS)
-def test_crypto_blake2b(msg, key, hash_size, chunks):
+@given(MSG, BLAKE2B_KEY, HASH_SIZE, CHUNK_SIZE)
+def test_crypto_blake2b(msg, key, hash_size, chunk_size):
     digest = crypto_blake2b(msg, key, hash_size)
     ctx = crypto_blake2b_init(key, hash_size)
 
-    chunked_update(ctx, crypto_blake2b_update, msg, chunks)
+    for chunk in chunked(msg, chunk_size):
+        crypto_blake2b_update(ctx, chunk)
     assert crypto_blake2b_final(ctx) == digest
 
 
-@given(MSG, CHUNKS)
-def test_crypto_sha512(msg, chunks):
+@given(MSG, CHUNK_SIZE)
+def test_crypto_sha512(msg, chunk_size):
     digest = crypto_sha512(msg)
     ctx = crypto_sha512_init()
 
-    chunked_update(ctx, crypto_sha512_update, msg, chunks)
+    for chunk in chunked(msg, chunk_size):
+        crypto_sha512_update(ctx, msg)
     assert crypto_sha512_final(ctx) == digest
 
 
-@given(MSG, SHA512_KEY, CHUNKS)
-def test_crypto_hmac_sha512(msg, key, chunks):
+@given(MSG, SHA512_KEY, CHUNK_SIZE)
+def test_crypto_hmac_sha512(msg, key, chunk_size):
     digest = crypto_hmac_sha512(msg, key)
     ctx = crypto_hmac_sha512_init(key)
 
-    chunked_update(ctx, crypto_hmac_sha512_update, msg, chunks)
+    for chunk in chunked(msg, chunk_size):
+        crypto_hmac_sha512_update(ctx, msg)
     assert crypto_hmac_sha512_final(ctx) == digest
 
 
@@ -73,7 +65,7 @@ def test_crypto_sha512_against_stdlib(msg):
 def test_crypto_blake2b_vectors():
     for vec in get_vectors('blake2-kat.json'):
         if vec['hash'] == 'blake2b':
-            msg = bytes(bytearray.fromhex(vec['in']))
+            msg = bytearray.fromhex(vec['in'])
             key = bytes(bytearray.fromhex(vec['key']))
             out = bytes(bytearray.fromhex(vec['out']))
             assert crypto_blake2b(msg, key=key) == out
@@ -81,7 +73,7 @@ def test_crypto_blake2b_vectors():
 
 def test_crypto_hmac_sha512_vectors():
     for vec in get_vectors('hmac-sha512.json'):
-        msg = bytes(bytearray.fromhex(vec['data']))
+        msg = bytearray.fromhex(vec['data'])
         key = bytes(bytearray.fromhex(vec['key']))
         out = bytes(bytearray.fromhex(vec['hash']))
         assert crypto_hmac_sha512(msg, key=key) == out

@@ -1,18 +1,17 @@
 Utilities
 =========
 
+.. module:: monocypher.utils
+
 Generating Random Bytes
 -----------------------
 
-.. module:: monocypher.utils
-
 .. autofunction:: monocypher.utils.random
 
-   Generates exactly `n` random bytes.
-   This just calls the :py:func:`~os.urandom` function
-   and returns the result.
+Copying Contexts
+----------------
 
-   :rtype: :py:class:`~bytes`
+.. autofunction:: monocypher.utils.copy_context
 
 
 Constant-Time Comparisons

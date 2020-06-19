@@ -24,6 +24,13 @@ hmac_sha512 = crypto_hmac_sha512
 
 
 class Context:
+    """
+    Can be used to incrementally compute the hash of a long
+    stream of bytes (e.g. a large file) without having to read
+    all of it into memory. Not recommended to be created directly,
+    use the other constructors.
+    """
+
     __slots__ = ('_ctx',)
 
     def __init__(self, ctx):
@@ -69,12 +76,17 @@ class Context:
 
 
 class Blake2bContext(Context):
+    """
+    Subclass of :py:class:`.Context` implementing the Blake2b hash.
+    Parameters have the same meaning as :py:func:`.blake2b`
+    """
+
     __slots__ = ()
 
-    KEY_MIN  = BLAKE2B_KEY_MIN
-    KEY_MAX  = BLAKE2B_KEY_MAX
-    HASH_MIN = BLAKE2B_HASH_MIN
-    HASH_MAX = BLAKE2B_HASH_MAX
+    KEY_MIN  = BLAKE2B_KEY_MIN    #: Minimum Blake2b key length
+    KEY_MAX  = BLAKE2B_KEY_MAX    #: Maximum Blake2b key length
+    HASH_MIN = BLAKE2B_HASH_MIN   #: Minimum Blake2b digest length
+    HASH_MAX = BLAKE2B_HASH_MAX   #: Maximum Blake2b digest length
 
     def __init__(self, key=b'', hash_size=64):
         super().__init__(crypto_blake2b_init(key, hash_size))
@@ -85,6 +97,10 @@ class Blake2bContext(Context):
 
 
 class SHA512Context(Context):
+    """
+    Subclass of :py:class:`.Context` implementing SHA-512.
+    """
+
     __slots__ = ()
 
     def __init__(self):
@@ -96,6 +112,12 @@ class SHA512Context(Context):
 
 
 class HMACSHA512Context(Context):
+    """
+    Subclass of :py:class:`.Context` implementing HMAC-SHA-512.
+    `key` must be specified, and has the same meaning as that from
+    :py:func:`.hmac_sha512`.
+    """
+
     __slots__ = ()
 
     def __init__(self, key):

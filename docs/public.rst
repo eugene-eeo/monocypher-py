@@ -82,10 +82,6 @@ Reference
 .. autoclass:: monocypher.public.PrivateKey
    :members:
 
-   .. data:: KEY_SIZE
-
-      Length of a private key (in bytes).
-
    .. method:: encode()
 
       Return the private key as bytes.
@@ -95,10 +91,6 @@ Reference
 
 .. autoclass:: monocypher.public.PublicKey
    :members:
-
-   .. data:: KEY_SIZE
-
-      Length of a public key (in bytes).
 
    .. method:: encode()
 

@@ -7,7 +7,7 @@ keys from passwords, please use a PDKF like Argon2.
 
 .. module:: monocypher.hash
 
-.. function:: monocypher.hash.blake2b(msg, key=b'', hash_size=64)
+.. autofunction:: monocypher.hash.blake2b
 
    Computes the Blake2b digest of the given `msg`,
    optionally with a `key` (which can be used to construct a
@@ -15,8 +15,8 @@ keys from passwords, please use a PDKF like Argon2.
    have length `hash_size`.
 
    :param msg: The message (a bytes-like object).
-   :param key: The key (:py:class:`~bytes`), between :py:obj:`.KEY_MIN` and :py:obj:`.KEY_MAX` long.
-   :param hash_size: Digest length (:py:class:`~int`), between :py:obj:`.HASH_MIN` and :py:obj:`.HASH_MAX`.
+   :param key: The key (:py:class:`bytes`), between :py:obj:`.Blake2bContext.KEY_MIN` and :py:obj:`.Blake2bContext.KEY_MAX` long.
+   :param hash_size: Digest length (:py:class:`int`), between :py:obj:`.Blake2bContext.HASH_MIN` and :py:obj:`.Blake2bContext.HASH_MAX`.
                      When using Blake2b as a MAC, anything below 16 is discouraged,
                      and when using Blake2b as a general-purpose hash function,
                      anything below 32 is discouraged.
@@ -55,7 +55,7 @@ Note that SHA-512 itself is not suitable for hashing passwords and deriving
 keys from them; please use a PDKF like Argon2.
 
 
-.. function:: monocypher.hash.sha512(msg)
+.. autofunction:: monocypher.hash.sha512
 
    Computes the SHA512 digest of the given `msg`, a bytes-like object.
 
@@ -64,7 +64,7 @@ keys from them; please use a PDKF like Argon2.
 HMAC-SHA512
 -----------
 
-.. function:: monocypher.hash.hmac_sha512(msg, key)
+.. autofunction:: monocypher.hash.hmac_sha512
 
    Computes the HMAC-SHA512 MAC of the given `msg` (a bytes-like object).
    In most cases the MAC can be safely truncated down to 16 bytes
@@ -95,36 +95,11 @@ Incremental Interface
 .. autoclass:: monocypher.hash.Context
    :members:
 
-   Can be used to incrementally compute the hash of a long
-   stream of bytes (e.g. a large file) without having to read
-   all of it into memory.
-
 .. autoclass:: monocypher.hash.Blake2bContext
+   :members:
 
-   `key` and `hash_size` have the same meaning as those from
-   :py:func:`~monocypher.hash.blake2b`.
-
-   .. data:: KEY_MIN
-
-      minimum key length
-
-   .. data:: KEY_MAX
-
-      maximum key length
-
-   .. data:: HASH_MIN
-
-      minimum digest length
-
-   .. data:: HASH_MAX
-
-      maximum digest length
-
-.. autoclass:: monocypher.hash.SHA512Context
+.. autoclass:: monocypher.hash.SHA512Context()
    :members:
 
 .. autoclass:: monocypher.hash.HMACSHA512Context
    :members:
-
-   `key` has the same meaning as that from
-   :py:func:`~monocypher.hash.hmac_sha512`.
