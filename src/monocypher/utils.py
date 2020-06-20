@@ -71,7 +71,7 @@ def ensure_length(name, value, length):
     ensure(
         len(value) == length,
         TypeError,
-        '{} have length {}'.format(name, length),
+        '{} must have length {}'.format(name, length),
     )
 
 
