@@ -4,11 +4,11 @@ import cffi
 
 
 cwd = os.path.abspath(os.path.dirname(__file__))
-c_source_dir = os.path.join(cwd, 'monocypher-3.1.1-src/')
+sources = os.path.join(cwd, 'monocypher-3.1.1-src/')
 
-header_file = os.path.join(cwd, 'monocypher_exposed.h')
-include_dir = c_source_dir
-sources     = glob.glob(os.path.join(c_source_dir, '*.c'))
+cdefs_file = os.path.join(cwd, 'monocypher_exposed.h')
+include_dir = sources
+sources     = glob.glob(os.path.join(sources, '*.c'))
 
 ffi = cffi.FFI()
 ffi.set_source(
@@ -22,5 +22,5 @@ ffi.set_source(
     include_dirs=[include_dir],
     extra_compile_args=['-std=c99', '-O3', '-march=native'],
 )
-with open(header_file, 'r') as fp:
+with open(cdefs_file, 'r') as fp:
     ffi.cdef(fp.read())

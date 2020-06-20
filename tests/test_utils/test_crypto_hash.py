@@ -1,5 +1,6 @@
 import pytest
 import hashlib
+import hmac
 from hypothesis import given, example
 from hypothesis.strategies import integers, binary
 from monocypher.utils.crypto_hash import (
@@ -61,6 +62,13 @@ def test_crypto_sha512_against_stdlib(msg):
     assert crypto_sha512(msg) == hashlib.sha512(msg).digest()
 
 
+# check that we are calling hmac-sha512 correctly!
+@given(binary(), binary())
+@example(b'', b'')
+def test_crypto_hmac_sha512_against_stdlib(secret, msg):
+    assert crypto_hmac_sha512(msg, secret) == hmac.new(secret, msg, hashlib.sha512).digest()
+
+
 # test vectors
 def test_crypto_blake2b_vectors():
     for vec in get_vectors('blake2-kat.json'):
@@ -71,14 +79,7 @@ def test_crypto_blake2b_vectors():
             assert crypto_blake2b(msg, key=key) == out
 
 
-def test_crypto_hmac_sha512_vectors():
-    for vec in get_vectors('hmac-sha512.json'):
-        msg = bytearray.fromhex(vec['data'])
-        key = bytes(bytearray.fromhex(vec['key']))
-        out = bytes(bytearray.fromhex(vec['hash']))
-        assert crypto_hmac_sha512(msg, key=key) == out
-
-
+# Check that we can use bytes-like objects
 @pytest.mark.parametrize('hash,ctx_init,ctx_update,ctx_final,init_args', [
     (crypto_blake2b,     crypto_blake2b_init,     crypto_blake2b_update,     crypto_blake2b_final,     {'key': b'', 'hash_size': 64}),
     (crypto_sha512,      crypto_sha512_init,      crypto_sha512_update,      crypto_sha512_final,      {}),
