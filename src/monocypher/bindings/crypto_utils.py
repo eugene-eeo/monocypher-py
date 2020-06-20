@@ -33,4 +33,5 @@ def crypto_verify64(a, b):
 
 
 def crypto_wipe(buf):
-    lib.crypto_wipe(ffi.from_buffer('uint8_t[]', buf), len(buf))
+    buf = ffi.from_buffer('uint8_t[]', buf, require_writable=True)
+    lib.crypto_wipe(buf, len(buf))

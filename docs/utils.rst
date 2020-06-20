@@ -33,3 +33,21 @@ Copying Contexts
 ----------------
 
 .. autofunction:: monocypher.utils.copy_context
+
+
+
+Memory Wipe
+-----------
+
+.. autofunction:: monocypher.utils.crypto_wipe
+
+   Wipe the given `buf` by filling it with zeros.
+   Example::
+
+       >>> buf = bytearray(b'abc')
+       >>> crypto_wipe(buf)
+       >>> buf
+       bytearray(b'\x00\x00\x00')
+
+   :param buf: Any writable object with the buffer protocol,
+               e.g. :py:class:`bytearray` or :py:class:`array.array`.
