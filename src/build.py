@@ -16,7 +16,6 @@ ffi.set_source(
     '''
 #include <stdlib.h>
 #include <monocypher.h>
-#include <monocypher-ed25519.h>
     ''',
     sources=sources,
     include_dirs=[include_dir],
