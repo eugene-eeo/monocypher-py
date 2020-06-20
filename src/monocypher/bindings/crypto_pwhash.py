@@ -26,16 +26,15 @@ def crypto_argon2i(
         hash = ffi.new('uint8_t[]', hash_size)
         key  = ffi.from_buffer('uint8_t[]', key)
         ad   = ffi.from_buffer('uint8_t[]', ad)
-        with salt, key, ad, password:
-            lib.crypto_argon2i_general(
-                hash, hash_size,
-                work_area, nb_blocks,
-                nb_iterations,
-                password, len(password),
-                salt, len(salt),
-                key, len(key),
-                ad, len(ad),
-            )
+        lib.crypto_argon2i_general(
+            hash, hash_size,
+            work_area, nb_blocks,
+            nb_iterations,
+            password, len(password),
+            salt, len(salt),
+            key, len(key),
+            ad, len(ad),
+        )
         return bytes(hash)
     finally:
         lib.free(work_area)

@@ -16,12 +16,11 @@ def crypto_blake2b(msg, key=b'', hash_size=64):
     msg  = ffi.from_buffer('uint8_t[]', msg)
     key  = ffi.from_buffer('uint8_t[]', key)
 
-    with msg, key:
-        lib.crypto_blake2b_general(
-            hash, hash_size,
-            key, len(key),
-            msg, len(msg),
-        )
+    lib.crypto_blake2b_general(
+        hash, hash_size,
+        key, len(key),
+        msg, len(msg),
+    )
     return bytes(hash)
 
 
@@ -31,15 +30,13 @@ def crypto_blake2b_init(key=b'', hash_size=64):
 
     ctx = ffi.new('crypto_blake2b_ctx *')
     key = ffi.from_buffer('uint8_t[]', key)
-    with key:
-        lib.crypto_blake2b_general_init(ctx, hash_size, key, len(key))
+    lib.crypto_blake2b_general_init(ctx, hash_size, key, len(key))
     return ctx
 
 
 def crypto_blake2b_update(ctx, msg):
     msg = ffi.from_buffer('uint8_t[]', msg)
-    with msg:
-        lib.crypto_blake2b_update(ctx, msg, len(msg))
+    lib.crypto_blake2b_update(ctx, msg, len(msg))
 
 
 def crypto_blake2b_final(ctx):
