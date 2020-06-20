@@ -33,7 +33,7 @@ setup(
     package_dir={"": "src"},
     packages=[
         "monocypher",
-        "monocypher.utils",
+        "monocypher.bindings",
     ],
 
     # CFFI
