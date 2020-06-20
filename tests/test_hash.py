@@ -30,3 +30,16 @@ def test_blake2b_context(msg, chunk_size):
 
     assert ctx1.digest() == digest1
     assert ctx2.digest() == digest2
+
+
+def test_blake2b_context_hashlib_api():
+    initial_context = Blake2bContext(b'initial', hash_size=32)
+
+    digest = blake2b(b'initial', hash_size=32)
+
+    for ctx in [initial_context, initial_context.copy()]:
+        assert ctx.digest() == digest
+        assert hasattr(ctx, 'name')
+        assert hasattr(ctx, 'block_size')
+        assert hasattr(ctx, 'digest_size') and ctx.digest_size == 32
+        assert ctx.hexdigest() == digest.hex()

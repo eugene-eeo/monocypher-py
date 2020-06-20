@@ -1,6 +1,6 @@
 from hypothesis import given
 from hypothesis.strategies import binary
-from monocypher.utils.crypto_cmp import crypto_verify16, crypto_verify32, crypto_verify64
+from monocypher.bindings.crypto_utils import crypto_verify16, crypto_verify32, crypto_verify64, crypto_wipe
 
 
 @given(binary(min_size=16, max_size=16),
@@ -19,3 +19,11 @@ def test_crypto_verify_32(a, b):
        binary(min_size=64, max_size=64))
 def test_crypto_verify_64(a, b):
     assert crypto_verify64(a, b) == (a == b)
+
+
+@given(binary())
+def test_crypto_wipe(b):
+    size = len(b)
+    ba = bytearray(b)
+    crypto_wipe(ba)
+    assert ba == bytes(size)

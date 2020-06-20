@@ -2,6 +2,17 @@ import os
 from monocypher._monocypher import ffi
 
 
+__all__ = (
+    'random',
+    'copy_context',
+    'crypto_wipe',
+    'crypto_verify16',
+    'crypto_verify32',
+    'crypto_verify64',
+    'ensure',
+)
+
+
 def random(n):
     """
     Generates exactly `n` random bytes.
@@ -86,9 +97,6 @@ class Encodable:
     def encode(self):
         return bytes(self)
 
-    def __hash__(self):
-        return hash(bytes(self))
-
 
 class HashEq32:
     __slots__ = ()
@@ -102,4 +110,4 @@ class HashEq32:
         return crypto_verify32(bytes(self), bytes(other))
 
 
-from monocypher.utils.crypto_cmp import crypto_verify32  # noqa: E402
+from monocypher.bindings.crypto_utils import crypto_wipe, crypto_verify16, crypto_verify32, crypto_verify64  # noqa: F402

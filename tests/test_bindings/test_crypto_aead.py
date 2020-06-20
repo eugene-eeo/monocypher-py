@@ -1,6 +1,6 @@
 from hypothesis import given
 from hypothesis.strategies import binary
-from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock
+from monocypher.bindings.crypto_aead import crypto_lock, crypto_unlock
 from monocypher._monocypher import ffi, lib
 
 

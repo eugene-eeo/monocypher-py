@@ -1,5 +1,5 @@
 from monocypher.utils import copy_context
-from monocypher.utils.crypto_hash import (
+from monocypher.bindings.crypto_hash import (
     crypto_blake2b,
     crypto_blake2b_init, crypto_blake2b_update, crypto_blake2b_final,
     BLAKE2B_KEY_MIN, BLAKE2B_KEY_MAX,
@@ -20,6 +20,8 @@ class Blake2bContext:
     long stream of bytes (e.g. a large file) without having to read
     all of it into memory.
     Parameters have the same meaning as :py:func:`.blake2b`.
+    This class is compatible with :py:mod:`hashlib`'s hash objects;
+    see :py:mod:`hashlib` for details.
     """
 
     KEY_MIN  = BLAKE2B_KEY_MIN    #: Minimum Blake2b key length
@@ -27,37 +29,35 @@ class Blake2bContext:
     HASH_MIN = BLAKE2B_HASH_MIN   #: Minimum Blake2b digest length
     HASH_MAX = BLAKE2B_HASH_MAX   #: Maximum Blake2b digest length
 
-    __slots__ = ('_ctx',)
+    name = 'blake2b'
+    block_size = 128
 
-    def __init__(self, key=b'', hash_size=64):
+    __slots__ = ('_ctx', '_hash_size')
+
+    def __init__(self, data=b'', key=b'', hash_size=64):
         self._ctx = crypto_blake2b_init(key=key, hash_size=hash_size)
+        self._hash_size = hash_size
+        self.update(data)
+
+    @property
+    def digest_size(self):
+        return self._hash_size
 
     def _copy_ctx(self):
         return copy_context(self._ctx, 'crypto_blake2b_ctx *')
 
     def copy(self):
-        """
-        Returns a copy of the hash object.
-        This can be useful for, e.g. computing digests of content
-        with a common prefix.
-        """
-        cls = self.__class__
-        obj = cls.__new__(cls)
+        obj = self.__class__.__new__(self.__class__)
         obj._ctx = self._copy_ctx()
+        obj._hash_size = self._hash_size
         return obj
 
     def update(self, data):
-        """
-        Update the context with a `bytes-like object
-        <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_.
-        """
         crypto_blake2b_update(self._ctx, data)
 
     def digest(self):
-        """
-        Returns the digest of the data passed to :py:meth:`.update` so far.
-
-        :rtype: :py:class:`bytes`
-        """
         # crypto_blake2b_final wipes the context on call
         return crypto_blake2b_final(self._copy_ctx())
+
+    def hexdigest(self):
+        return self.digest().hex()

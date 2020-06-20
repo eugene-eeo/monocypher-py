@@ -1,6 +1,6 @@
 from hypothesis import given
 from hypothesis.strategies import integers, binary
-from monocypher.utils.crypto_hash import (
+from monocypher.bindings.crypto_hash import (
     crypto_blake2b,
     crypto_blake2b_init, crypto_blake2b_update, crypto_blake2b_final,
     BLAKE2B_KEY_MIN, BLAKE2B_KEY_MAX,

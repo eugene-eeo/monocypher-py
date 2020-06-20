@@ -1,5 +1,5 @@
 from monocypher.utils import ensure_bytes_with_length, ensure, Encodable, HashEq32, random
-from monocypher.utils.crypto_public import crypto_key_exchange, crypto_key_exchange_public_key
+from monocypher.bindings.crypto_public import crypto_key_exchange, crypto_key_exchange_public_key
 from monocypher.secret import SecretBox
 
 

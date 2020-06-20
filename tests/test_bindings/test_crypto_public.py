@@ -1,6 +1,6 @@
 from hypothesis import given
 from hypothesis.strategies import binary
-from monocypher.utils.crypto_public import (
+from monocypher.bindings.crypto_public import (
     crypto_key_exchange, crypto_key_exchange_public_key,
     crypto_x25519, crypto_x25519_public_key,
 )

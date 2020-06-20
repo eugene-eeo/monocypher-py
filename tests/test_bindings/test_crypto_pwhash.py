@@ -1,4 +1,4 @@
-from monocypher.utils.crypto_pwhash import crypto_argon2i
+from monocypher.bindings.crypto_pwhash import crypto_argon2i
 
 from tests.utils import get_vectors, hex2bytes
 

@@ -1,7 +1,7 @@
 from hypothesis import given
 from hypothesis.strategies import binary
-from monocypher.utils.crypto_public import crypto_x25519_public_key
-from monocypher.utils.crypto_sign import (
+from monocypher.bindings.crypto_public import crypto_x25519_public_key
+from monocypher.bindings.crypto_sign import (
     crypto_sign, crypto_sign_public_key, crypto_check,
     crypto_from_eddsa_private, crypto_from_eddsa_public,
 )

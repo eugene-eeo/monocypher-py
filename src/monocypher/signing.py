@@ -1,5 +1,5 @@
 from monocypher.utils import ensure_bytes_with_length, Encodable, HashEq32, random
-from monocypher.utils.crypto_sign import (
+from monocypher.bindings.crypto_sign import (
     crypto_check, crypto_sign, crypto_sign_public_key,
     crypto_from_eddsa_private, crypto_from_eddsa_public,
 )

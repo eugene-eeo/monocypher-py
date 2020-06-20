@@ -1,5 +1,5 @@
 from monocypher.utils import ensure_bytes_with_length, Encodable, HashEq32, random
-from monocypher.utils.crypto_aead import crypto_lock, crypto_unlock
+from monocypher.bindings.crypto_aead import crypto_lock, crypto_unlock
 
 
 __all__ = ('EncryptedMessage', 'SecretBox', 'CryptoError')

@@ -15,8 +15,8 @@ The output is suitable for use as the key for the :py:class:`~monocypher.secret.
 
    If you want to use the output for password verification, it is
    recommended to set the `hash_size` to 32 or 64 so that you can
-   use the :py:func:`monocypher.cmp.crypto_verify32` or
-   :py:func:`monocypher.cmp.crypto_verify64` functions.
+   use the :py:func:`monocypher.utils.crypto_verify32` or
+   :py:func:`monocypher.utils.crypto_verify64` functions.
 
    :param password: Password (bytes-like object).
    :param salt: Salt (bytes-like object), at least 8 bytes.
@@ -56,7 +56,7 @@ Password Verification
 .. code:: python
 
    from monocypher.pwhash import argon2i
-   from monocypher.cmp import crypto_verify32
+   from monocypher.utils import crypto_verify32
 
    salt = b'super-secret-salt'
 
