@@ -4,40 +4,36 @@ from monocypher.utils.crypto_hash import (
     crypto_blake2b_init, crypto_blake2b_update, crypto_blake2b_final,
     BLAKE2B_KEY_MIN, BLAKE2B_KEY_MAX,
     BLAKE2B_HASH_MIN, BLAKE2B_HASH_MAX,
-    # sha512
-    crypto_sha512,
-    crypto_sha512_init, crypto_sha512_update, crypto_sha512_final,
-    crypto_hmac_sha512,
-    crypto_hmac_sha512_init, crypto_hmac_sha512_update, crypto_hmac_sha512_final,
 )
 
 
-__all__ = ('Blake2bContext', 'blake2b',
-           'SHA512Context', 'sha512',
-           'HMACSHA512Context', 'hmac_sha512')
+__all__ = ('Blake2bContext', 'blake2b')
 
 
 # Direct Interface
-blake2b     = crypto_blake2b
-sha512      = crypto_sha512
-hmac_sha512 = crypto_hmac_sha512
+blake2b = crypto_blake2b
 
 
-class Context:
+class Blake2bContext:
     """
-    Can be used to incrementally compute the hash of a long
-    stream of bytes (e.g. a large file) without having to read
-    all of it into memory. Not recommended to be created directly,
-    use the other constructors.
+    Can be used to incrementally compute the `blake2b` hash of a
+    long stream of bytes (e.g. a large file) without having to read
+    all of it into memory.
+    Parameters have the same meaning as :py:func:`.blake2b`.
     """
+
+    KEY_MIN  = BLAKE2B_KEY_MIN    #: Minimum Blake2b key length
+    KEY_MAX  = BLAKE2B_KEY_MAX    #: Maximum Blake2b key length
+    HASH_MIN = BLAKE2B_HASH_MIN   #: Minimum Blake2b digest length
+    HASH_MAX = BLAKE2B_HASH_MAX   #: Maximum Blake2b digest length
 
     __slots__ = ('_ctx',)
 
-    def __init__(self, ctx):
-        self._ctx = ctx
+    def __init__(self, key=b'', hash_size=64):
+        self._ctx = crypto_blake2b_init(key=key, hash_size=hash_size)
 
     def _copy_ctx(self):
-        return copy_context(self._ctx, self._ctx_type)
+        return copy_context(self._ctx, 'crypto_blake2b_ctx *')
 
     def copy(self):
         """
@@ -55,7 +51,7 @@ class Context:
         Update the context with a `bytes-like object
         <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_.
         """
-        self._update(self._ctx, data)
+        crypto_blake2b_update(self._ctx, data)
 
     def digest(self):
         """
@@ -64,57 +60,4 @@ class Context:
         :rtype: :py:class:`bytes`
         """
         # crypto_blake2b_final wipes the context on call
-        return self._final(self._copy_ctx())
-
-
-class Blake2bContext(Context):
-    """
-    Subclass of :py:class:`.Context` implementing the Blake2b hash.
-    Parameters have the same meaning as :py:func:`.blake2b`.
-    """
-
-    __slots__ = ()
-
-    KEY_MIN  = BLAKE2B_KEY_MIN    #: Minimum Blake2b key length
-    KEY_MAX  = BLAKE2B_KEY_MAX    #: Maximum Blake2b key length
-    HASH_MIN = BLAKE2B_HASH_MIN   #: Minimum Blake2b digest length
-    HASH_MAX = BLAKE2B_HASH_MAX   #: Maximum Blake2b digest length
-
-    def __init__(self, key=b'', hash_size=64):
-        super().__init__(crypto_blake2b_init(key, hash_size))
-
-    _ctx_type = 'crypto_blake2b_ctx *'
-    _update = staticmethod(crypto_blake2b_update)
-    _final  = staticmethod(crypto_blake2b_final)
-
-
-class SHA512Context(Context):
-    """
-    Subclass of :py:class:`.Context` implementing SHA-512.
-    """
-
-    __slots__ = ()
-
-    def __init__(self):
-        super().__init__(crypto_sha512_init())
-
-    _ctx_type = 'crypto_sha512_ctx *'
-    _update = staticmethod(crypto_sha512_update)
-    _final  = staticmethod(crypto_sha512_final)
-
-
-class HMACSHA512Context(Context):
-    """
-    Subclass of :py:class:`.Context` implementing HMAC-SHA-512.
-    `key` must be specified, and has the same meaning as that from
-    :py:func:`.hmac_sha512`.
-    """
-
-    __slots__ = ()
-
-    def __init__(self, key):
-        super().__init__(crypto_hmac_sha512_init(key))
-
-    _ctx_type = 'crypto_hmac_sha512_ctx *'
-    _update = staticmethod(crypto_hmac_sha512_update)
-    _final  = staticmethod(crypto_hmac_sha512_final)
+        return crypto_blake2b_final(self._copy_ctx())

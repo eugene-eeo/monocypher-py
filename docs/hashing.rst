@@ -42,40 +42,6 @@ MAC Example
        return crypto_verify16(mac, compute_mac(msg))
 
 
-SHA-512
--------
-
-SHA-512 is a cryptographically secure hash.
-It is generally recommended to use :py:func:`~monocypher.hash.blake2b` instead,
-as it is faster on x86_64 CPUs and lacks many of the pitfalls of SHA-512.
-SHA-512 cannot be used as a MAC algorithm directly; please use
-:py:func:`~monocypher.hash.hmac_sha512` instead.
-
-Note that SHA-512 itself is not suitable for hashing passwords and deriving
-keys from them; please use a PDKF like Argon2.
-
-
-.. autofunction:: monocypher.hash.sha512
-
-   Computes the SHA512 digest of the given `msg`, a bytes-like object.
-
-   :rtype: :py:class:`~bytes`
-
-HMAC-SHA512
------------
-
-.. autofunction:: monocypher.hash.hmac_sha512
-
-   Computes the HMAC-SHA512 MAC of the given `msg` (a bytes-like object).
-   In most cases the MAC can be safely truncated down to 16 bytes
-   (but we leave that choice up to the user).
-
-   :param key: The key (:py:class:`~bytes`). 32 is a good default. Keys longer
-               than 128 bytes will be reduced to 64 bytes by hashing it with
-               SHA-512.
-   :rtype: :py:class:`~bytes`
-
-
 Incremental Interface
 ---------------------
 
@@ -92,17 +58,5 @@ Incremental Interface
    digest = ctx.digest()
 
 
-.. autoclass:: monocypher.hash.Context
-   :members:
-
 .. autoclass:: monocypher.hash.Blake2bContext
-   :show-inheritance:
-   :members:
-
-.. autoclass:: monocypher.hash.SHA512Context()
-   :show-inheritance:
-   :members:
-
-.. autoclass:: monocypher.hash.HMACSHA512Context
-   :show-inheritance:
    :members:

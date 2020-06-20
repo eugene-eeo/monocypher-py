@@ -16,14 +16,15 @@ def crypto_lock(key, nonce, msg, ad=b''):
     msg   = ffi.from_buffer('uint8_t[]', msg)
     ad    = ffi.from_buffer('uint8_t[]', ad)
 
-    lib.crypto_lock_aead(
-        mac,
-        ct,
-        key,
-        nonce,
-        ad, len(ad),
-        msg, len(msg),
-    )
+    with key, nonce, msg, ad:
+        lib.crypto_lock_aead(
+            mac,
+            ct,
+            key,
+            nonce,
+            ad, len(ad),
+            msg, len(msg),
+        )
     return bytes(mac), bytes(ct)
 
 
@@ -41,14 +42,16 @@ def crypto_unlock(key, mac, nonce, ciphertext, ad=b''):
     ct = ffi.from_buffer('uint8_t[]', ciphertext)
     ad = ffi.from_buffer('uint8_t[]', ad)
     pt = ffi.new('uint8_t[]', len(ciphertext))
-    rv = lib.crypto_unlock_aead(
-        pt,
-        key,
-        nonce,
-        mac,
-        ad, len(ad),
-        ct, len(ct),
-    )
+
+    with key, mac, nonce, ct, ad:
+        rv = lib.crypto_unlock_aead(
+            pt,
+            key,
+            nonce,
+            mac,
+            ad, len(ad),
+            ct, len(ct),
+        )
     if rv != 0:
         return None
     return bytes(pt)

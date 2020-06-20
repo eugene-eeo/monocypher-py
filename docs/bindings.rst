@@ -24,7 +24,7 @@ as input. In particular this means you can wipe secrets::
    assert bytes(secret_key) == bytes(32)
 
 However, there are some pitfalls in the name of convenience -- e.g.,
-if you use :py:func:`~monocypher.bindings.crypto_from_ed25519_private`,
+if you use :py:func:`~monocypher.bindings.crypto_from_eddsa_private`,
 it returns a :py:class:`bytes` object containing the derived X25519
 private key -- if you need that much control over memory, you probably
 know what you're doing anyways.

@@ -25,8 +25,7 @@ It supports Python 3.5+ (including PyPy). Examples::
 Installation
 ------------
 
-``monocypher-py`` bundles Monocypher 3.1.1 (with the optional code)
-along with the source.
+``monocypher-py`` bundles Monocypher 3.1.1 along with the source.
 
 ::
 

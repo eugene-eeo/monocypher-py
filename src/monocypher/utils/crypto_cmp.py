@@ -9,8 +9,8 @@ def crypto_verify16(a, b):
     a = ffi.from_buffer('uint8_t[16]', a)
     b = ffi.from_buffer('uint8_t[16]', b)
 
-    rv = lib.crypto_verify16(a, b)
-    return rv == 0
+    with a, b:
+        return lib.crypto_verify16(a, b) == 0
 
 
 def crypto_verify32(a, b):
@@ -20,8 +20,8 @@ def crypto_verify32(a, b):
     a = ffi.from_buffer('uint8_t[32]', a)
     b = ffi.from_buffer('uint8_t[32]', b)
 
-    rv = lib.crypto_verify32(a, b)
-    return rv == 0
+    with a, b:
+        return lib.crypto_verify32(a, b) == 0
 
 
 def crypto_verify64(a, b):
@@ -31,5 +31,5 @@ def crypto_verify64(a, b):
     a = ffi.from_buffer('uint8_t[64]', a)
     b = ffi.from_buffer('uint8_t[64]', b)
 
-    rv = lib.crypto_verify64(a, b)
-    return rv == 0
+    with a, b:
+        return lib.crypto_verify64(a, b) == 0
