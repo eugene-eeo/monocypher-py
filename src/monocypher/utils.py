@@ -16,10 +16,9 @@ __all__ = (
 def random(n):
     """
     Generates exactly `n` random bytes.
-    This just calls the :py:func:`os.urandom` function
-    and returns the result.
+    This just calls :py:func:`os.urandom` and returns the result.
 
-    :rtype: :py:class:`~bytes`
+    :rtype: :py:class:`bytes`
     """
     return os.urandom(n)
 

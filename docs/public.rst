@@ -89,7 +89,7 @@ Reference
 
       Return the private key as bytes.
 
-      :rtype: :py:class:`~bytes`
+      :rtype: :py:class:`bytes`
 
 
 .. autoclass:: monocypher.public.PublicKey
@@ -99,7 +99,7 @@ Reference
 
       Return the public key as bytes.
 
-      :rtype: :py:class:`~bytes`
+      :rtype: :py:class:`bytes`
 
 
 .. autoclass:: monocypher.public.Box

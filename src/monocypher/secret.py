@@ -28,7 +28,7 @@ class EncryptedMessage(bytes):
         """
         Returns the nonce.
 
-        :rtype: :class:`~bytes`
+        :rtype: :class:`bytes`
         """
         return self._nonce
 
@@ -39,7 +39,7 @@ class EncryptedMessage(bytes):
         This is equivalent concatenating :py:obj:`.detached_mac`
         and :py:obj:`.detached_ciphertext`.
 
-        :rtype: :class:`~bytes`
+        :rtype: :class:`bytes`
         """
         return self._ciphertext
 

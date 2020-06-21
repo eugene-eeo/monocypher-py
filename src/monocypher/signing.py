@@ -15,7 +15,7 @@ class SignatureError(Exception):
 
 class SignedMessage(bytes):
     """
-    A subclass of :py:class:`~bytes`, representing a signed message.
+    A subclass of :py:class:`bytes` representing a signed message.
     By default, the signature will be prepended to the message.
     """
 
@@ -31,7 +31,7 @@ class SignedMessage(bytes):
         """
         Returns the signature part.
 
-        :rtype: :py:class:`~bytes`
+        :rtype: :py:class:`bytes`
         """
         return self._sig
 
@@ -40,7 +40,7 @@ class SignedMessage(bytes):
         """
         Returns the message part.
 
-        :rtype: :py:class:`~bytes`
+        :rtype: :py:class:`bytes`
         """
         return self._msg
 
@@ -49,7 +49,7 @@ class VerifyKey(Encodable, HashEq32):
     """
     EdDSA public key. This can be published.
 
-    :param pk: The public key (:py:class:`~bytes`),
+    :param pk: The public key (:py:class:`bytes`),
                should be :py:obj:`.KEY_SIZE` bytes long.
     """
 
@@ -69,7 +69,7 @@ class VerifyKey(Encodable, HashEq32):
         verification succeeds, otherwise :py:class:`.SignatureError` is raised.
 
         :param signed: A bytes-like object, or a :py:class:`.SignedMessage` object.
-        :param sig: None, or a :py:class:`~bytes` object with length :py:obj:`.SIG_SIZE`.
+        :param sig: None, or a :py:class:`bytes` object with length :py:obj:`.SIG_SIZE`.
         """
         msg = signed
         if sig is None:
@@ -101,7 +101,7 @@ class SigningKey(Encodable, HashEq32):
     """
     EdDSA private key. This should be kept secret.
 
-    :param sk: The secret key (:py:class:`~bytes`),
+    :param sk: The secret key (:py:class:`bytes`),
                should be :py:obj:`.KEY_SIZE` bytes long.
     """
 

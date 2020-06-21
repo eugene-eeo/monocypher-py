@@ -15,22 +15,22 @@ keys from passwords, please use a PDKF like Argon2.
    have length `hash_size`.
 
    :param msg: The message (a bytes-like object).
-   :param key: The key (:py:class:`bytes`), between :py:obj:`.Blake2bContext.KEY_MIN` and :py:obj:`.Blake2bContext.KEY_MAX` long.
+   :param key: The key (bytes-like), between :py:obj:`.Blake2bContext.KEY_MIN` and :py:obj:`.Blake2bContext.KEY_MAX` long.
    :param hash_size: Digest length (:py:class:`int`), between :py:obj:`.Blake2bContext.HASH_MIN` and :py:obj:`.Blake2bContext.HASH_MAX`.
                      When using Blake2b as a MAC, anything below 16 is discouraged,
                      and when using Blake2b as a general-purpose hash function,
                      anything below 32 is discouraged.
-   :rtype: :py:class:`~bytes`
+   :rtype: :py:class:`bytes`
 
 MAC Example
 -----------
 
 .. code:: python
 
+   from monocypher.utils import random, crypto_verify16
    from monocypher.hash import blake2b
-   from monocypher.cmp import crypto_verify16
 
-   KEY = b'super-secret-key'
+   KEY = random(64)
 
    def compute_mac(msg):
        return blake2b(msg, key=KEY, hash_size=16)
