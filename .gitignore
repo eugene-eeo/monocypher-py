@@ -11,3 +11,4 @@ monocypher/_monocypher.cpython-38-x86_64-linux-gnu.so
 /docs/_templates/
 /.eggs/
 __pycache__/
+/dist/

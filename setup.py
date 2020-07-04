@@ -16,6 +16,7 @@ setup(
 
     description='Python binding to the Monocypher library',
     long_description=open('README.md', 'r').read(),
+    long_description_content_type='text/markdown',
     url='https://github.com/eugene-eeo/monocypher-py',
     license='CC0 1.0 Universal',
 

@@ -1,0 +1,3 @@
+include src/monocypher-3.1.1-src/*
+include src/build.py
+include src/monocypher_exposed.h
