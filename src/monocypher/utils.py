@@ -90,15 +90,11 @@ def ensure_range(name, value, min, max=float('+inf')):
     )
 
 
-class Encodable:
+class Key:
     __slots__ = ()
 
     def encode(self):
         return bytes(self)
-
-
-class HashEq32:
-    __slots__ = ()
 
     def __hash__(self):
         return hash(bytes(self))
@@ -109,4 +105,4 @@ class HashEq32:
         return crypto_verify32(bytes(self), bytes(other))
 
 
-from monocypher.bindings.crypto_utils import crypto_wipe, crypto_verify16, crypto_verify32, crypto_verify64  # noqa: F402
+from monocypher.bindings.crypto_utils import crypto_wipe, crypto_verify16, crypto_verify32, crypto_verify64  # noqa: E402

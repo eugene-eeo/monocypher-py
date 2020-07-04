@@ -1,4 +1,4 @@
-from monocypher.utils import ensure_bytes_with_length, Encodable, HashEq32, random
+from monocypher.utils import ensure_bytes_with_length, Key, random
 from monocypher.bindings.crypto_sign import (
     crypto_check, crypto_sign, crypto_sign_public_key,
     crypto_from_eddsa_private, crypto_from_eddsa_public,
@@ -45,7 +45,7 @@ class SignedMessage(bytes):
         return self._msg
 
 
-class VerifyKey(Encodable, HashEq32):
+class VerifyKey(Key):
     """
     EdDSA public key. This can be published.
 
@@ -97,7 +97,7 @@ class VerifyKey(Encodable, HashEq32):
         return PublicKey(crypto_from_eddsa_public(self._pk))
 
 
-class SigningKey(Encodable, HashEq32):
+class SigningKey(Key):
     """
     EdDSA private key. This should be kept secret.
 

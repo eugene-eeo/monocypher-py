@@ -1,4 +1,4 @@
-from monocypher.utils import ensure_bytes_with_length, ensure, Encodable, HashEq32, random
+from monocypher.utils import ensure_bytes_with_length, ensure, Key, random
 from monocypher.bindings.crypto_public import crypto_key_exchange, crypto_key_exchange_public_key
 from monocypher.secret import SecretBox
 
@@ -6,7 +6,7 @@ from monocypher.secret import SecretBox
 __all__ = ('PublicKey', 'PrivateKey', 'Box')
 
 
-class PublicKey(Encodable, HashEq32):
+class PublicKey(Key):
     """
     X25519 public key. This can be published.
 
@@ -25,7 +25,7 @@ class PublicKey(Encodable, HashEq32):
         return self._pk
 
 
-class PrivateKey(Encodable, HashEq32):
+class PrivateKey(Key):
     """
     X25519 private key. This **must** be kept secret.
 
