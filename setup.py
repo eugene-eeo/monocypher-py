@@ -4,9 +4,9 @@ from setuptools import setup
 version = '0.0.1'
 
 
-install_requires = ['cffi>=1.14.0']
+install_requires = ['cffi>=1.14.3']
 setup_requirements = ['setuptools'] + install_requires
-tests_require = ['pytest>=5.4.3', 'hypothesis>=5.16.1', 'pytest-cov>=2.10.0']
+tests_require = ['pytest>=6.1.1', 'hypothesis>=5.16.1', 'pytest-cov>=2.10.0']
 docs_require  = ['Sphinx>=3.*']
 
 
