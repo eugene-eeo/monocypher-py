@@ -1,7 +1,11 @@
 language: python
-os: linux
+os:
+  - linux
+  - freebsd
 # ===== Linux ======
-dist: xenial
+dist:
+  - xenial
+  - bionic
 python:
   - 3.6
   - 3.7
@@ -13,38 +17,62 @@ jobs:
     # ======= OSX ========
     - name: "Python 3.7.5 on macOS 10.14"
       os: osx
-      osx_image: xcode10.2  # Python 3.7.5 running on macOS 10.14.3
-      language: shell       # 'language: python' is an error on Travis CI macOS
+      osx_image: xcode10.2
+      language: shell
       before_install:
         - python3 --version
         - pip3 install -U pip
       script: python3 -m pytest
-    - name: "Python 3.8.0 on macOS 10.14"
+    - name: "Python 3.7.7 on macOS 10.15"
       os: osx
-      osx_image: xcode11.3  # Python 3.8.0 running on macOS 10.14.6
-      language: shell       # 'language: python' is an error on Travis CI macOS
+      osx_image: xcode11.6
+      language: shell
+      before_install:
+        - python3 --version
+        - pip3 install -U pip
+      script: python3 -m pytest
+    - name: "Python 3.8.0 on macOS 11.3"
+      os: osx
+      osx_image: xcode12.5
+      language: shell
       before_install:
         - python3 --version
         - pip3 install -U pip
       script: python3 -m pytest
     #  ====== WINDOWS =========
     - name: "Python 3.6.8 on Windows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
+      os: windows
+      language: shell
       before_install:
         - choco install python --version 3.6.8
         - python --version
         - python -m pip install --upgrade pip
       env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
     - name: "Python 3.7.4 on Windows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
+      os: windows
+      language: shell
       before_install:
         - choco install python --version 3.7.4
         - python --version
         - python -m pip install --upgrade pip
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
-install: pip install -r requirements.txt && pip install .
+    - name: "Python 3.8.10 on Windows"
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.8.10
+        - python --version
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+    - name: "Python 3.9.5 on Windows"
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.9.5
+        - python --version
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+install: pip install ".[tests]"
 script: python -m pytest
 after_success:
   bash <(curl -s https://codecov.io/bash)
