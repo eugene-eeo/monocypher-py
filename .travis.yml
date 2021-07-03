@@ -77,17 +77,19 @@ jobs:
       language: shell
       before_install:
         - choco install python --version 3.8.10
-        - python --version
-        - python -m pip install --upgrade pip
+        - python3 --version
+        - python3 -m pip install --upgrade pip
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      script: python3 -m pytest
     - name: "Python 3.9.5 on Windows"
       os: windows
       language: shell
       before_install:
         - choco install python --version 3.9.5
-        - python --version
-        - python -m pip install --upgrade pip
+        - python3 --version
+        - python3 -m pip install --upgrade pip
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      script: python3 -m pytest
 install: pip install -r requirements.txt && pip install .
 script: python -m pytest
 after_success:
