@@ -1,12 +1,12 @@
 from setuptools import setup
 
 
-version = '0.0.1'
+version = '0.0.2'
 
 
-install_requires = ['cffi>=1.14.3']
+install_requires = ['cffi>=1.14']
 setup_requirements = ['setuptools'] + install_requires
-tests_require = ['pytest>=6.1.1', 'hypothesis>=5.16.1', 'pytest-cov>=2.10.0']
+tests_require = ['pytest==6.2.4', 'hypothesis==6.14.1', 'pytest-cov==2.12.1']
 docs_require  = ['Sphinx>=3.*']
 
 
