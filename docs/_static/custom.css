@@ -15,7 +15,5 @@ h2 { font-size: 1.35em !important; }
 h3 { font-size: 1.2em !important; }
 h4 { font-size: 1.2em !important; }
 
-.py.class {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
+.class, .exception { padding-bottom: 25px !important; }
+.property, .function, .method { padding-bottom: 10px !important; }

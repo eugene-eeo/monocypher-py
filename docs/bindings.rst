@@ -14,8 +14,10 @@ for each parameter.
 All parameters which are expected to be ``uint8_t[]`` or ``uint8_t[K]``
 in the Monocypher API can receive a
 `bytes-like object <https://docs.python.org/3/glossary.html#term-bytes-like-object>`_
-as input. It is your responsibility to ensure that valid buffers
-are passed in. This also means you can wipe secrets::
+as input.
+They also check that buffers are the right size.
+It is your responsibility to ensure that valid buffers are passed in.
+This also means you can wipe secrets::
 
    secret_key = bytearray(32)
    open('secret.txt', mode='rb').readinto(secret_key)

@@ -4,7 +4,7 @@ import cffi
 
 
 cwd = os.path.abspath(os.path.dirname(__file__))
-sources = os.path.join(cwd, 'monocypher-3.1.1-src/')
+sources = os.path.join(cwd, 'monocypher-3.1.2-src/')
 
 cdefs_file = os.path.join(cwd, 'monocypher_exposed.h')
 include_dir = sources

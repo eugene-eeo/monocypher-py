@@ -1,6 +1,10 @@
 void *malloc(size_t size);
 void free(void *ptr);
 
+////////////////////////
+/// Type definitions ///
+////////////////////////
+
 // Vtable for EdDSA with a custom hash.
 // Instantiate it to define a custom hash.
 // Its size, contents, and layout, are part of the public API.
@@ -68,8 +72,6 @@ void crypto_wipe(void *secret, size_t size);
 
 // Authenticated encryption
 // ------------------------
-
-// Direct interface
 void crypto_lock(uint8_t        mac[16],
                  uint8_t       *cipher_text,
                  const uint8_t  key[32],
@@ -81,7 +83,7 @@ int crypto_unlock(uint8_t       *plain_text,
                   const uint8_t  mac[16],
                   const uint8_t *cipher_text, size_t text_size);
 
-// Direct interface with additional data
+// With additional data
 void crypto_lock_aead(uint8_t        mac[16],
                       uint8_t       *cipher_text,
                       const uint8_t  key[32],
@@ -103,9 +105,9 @@ int crypto_unlock_aead(uint8_t       *plain_text,
 void crypto_blake2b(uint8_t hash[64],
                     const uint8_t *message, size_t message_size);
 
-void crypto_blake2b_general(uint8_t       *hash    , size_t hash_size,
-                            const uint8_t *key     , size_t key_size, // optional
-                            const uint8_t *message , size_t message_size);
+void crypto_blake2b_general(uint8_t       *hash   , size_t hash_size,
+                            const uint8_t *key    , size_t key_size, // optional
+                            const uint8_t *message, size_t message_size);
 
 // Incremental interface
 void crypto_blake2b_init  (crypto_blake2b_ctx *ctx);
@@ -124,13 +126,13 @@ extern const crypto_sign_vtable crypto_blake2b_vtable;
 // ----------------------------------
 void crypto_argon2i(uint8_t       *hash,      uint32_t hash_size,     // >= 4
                     void          *work_area, uint32_t nb_blocks,     // >= 8
-                    uint32_t       nb_iterations,                     // >= 1
+                    uint32_t       nb_iterations,                     // >= 3
                     const uint8_t *password,  uint32_t password_size,
                     const uint8_t *salt,      uint32_t salt_size);    // >= 8
 
 void crypto_argon2i_general(uint8_t       *hash,      uint32_t hash_size,// >= 4
                             void          *work_area, uint32_t nb_blocks,// >= 8
-                            uint32_t       nb_iterations,                // >= 1
+                            uint32_t       nb_iterations,                // >= 3
                             const uint8_t *password,  uint32_t password_size,
                             const uint8_t *salt,      uint32_t salt_size,// >= 8
                             const uint8_t *key,       uint32_t key_size,
@@ -139,8 +141,8 @@ void crypto_argon2i_general(uint8_t       *hash,      uint32_t hash_size,// >= 4
 
 // Key exchange (x25519 + HChacha20)
 // ---------------------------------
-void crypto_key_exchange_public_key(uint8_t       your_public_key[32],
-                                    const uint8_t your_secret_key[32]);
+void crypto_key_exchange_public_key(uint8_t       public_key[32],
+                                    const uint8_t secret_key[32]);
 void crypto_key_exchange(uint8_t       shared_key      [32],
                          const uint8_t your_secret_key [32],
                          const uint8_t their_public_key[32]);
@@ -162,54 +164,6 @@ int crypto_check(const uint8_t  signature [64],
                  const uint8_t  public_key[32],
                  const uint8_t *message, size_t message_size);
 
-// Incremental interface for signatures (2 passes)
-void crypto_sign_init_first_pass(crypto_sign_ctx_abstract *ctx,
-                                 const uint8_t  secret_key[32],
-                                 const uint8_t  public_key[32]);
-void crypto_sign_update(crypto_sign_ctx_abstract *ctx,
-                        const uint8_t *message, size_t message_size);
-void crypto_sign_init_second_pass(crypto_sign_ctx_abstract *ctx);
-// use crypto_sign_update() again.
-void crypto_sign_final(crypto_sign_ctx_abstract *ctx, uint8_t signature[64]);
-
-// Incremental interface for verification (1 pass)
-void crypto_check_init  (crypto_check_ctx_abstract *ctx,
-                         const uint8_t signature[64],
-                         const uint8_t public_key[32]);
-void crypto_check_update(crypto_check_ctx_abstract *ctx,
-                         const uint8_t *message, size_t message_size);
-int crypto_check_final  (crypto_check_ctx_abstract *ctx);
-
-// Custom hash interface
-void crypto_sign_public_key_custom_hash(uint8_t       public_key[32],
-                                        const uint8_t secret_key[32],
-                                        const crypto_sign_vtable *hash);
-void crypto_sign_init_first_pass_custom_hash(crypto_sign_ctx_abstract *ctx,
-                                             const uint8_t secret_key[32],
-                                             const uint8_t public_key[32],
-                                             const crypto_sign_vtable *hash);
-void crypto_check_init_custom_hash(crypto_check_ctx_abstract *ctx,
-                                   const uint8_t signature[64],
-                                   const uint8_t public_key[32],
-                                   const crypto_sign_vtable *hash);
-
-// EdDSA to X25519
-// ---------------
-void crypto_from_eddsa_private(uint8_t x25519[32], const uint8_t eddsa[32]);
-void crypto_from_eddsa_public (uint8_t x25519[32], const uint8_t eddsa[32]);
-
-// Elligator 2
-// -----------
-
-// Elligator mappings proper
-void crypto_hidden_to_curve(uint8_t curve [32], const uint8_t hidden[32]);
-int  crypto_curve_to_hidden(uint8_t hidden[32], const uint8_t curve [32],
-                            uint8_t tweak);
-
-// Easy to use key pair generation
-void crypto_hidden_key_pair(uint8_t hidden[32], uint8_t secret_key[32],
-                            uint8_t seed[32]);
-
 ////////////////////////////
 /// Low level primitives ///
 ////////////////////////////
@@ -220,10 +174,13 @@ void crypto_hidden_key_pair(uint8_t hidden[32], uint8_t secret_key[32],
 // --------
 
 // Specialised hash.
+// Used to hash X25519 shared secrets.
 void crypto_hchacha20(uint8_t       out[32],
                       const uint8_t key[32],
                       const uint8_t in [16]);
 
+// Unauthenticated stream cipher.
+// Don't forget to add authentication.
 void crypto_chacha20(uint8_t       *cipher_text,
                      const uint8_t *plain_text,
                      size_t         text_size,
@@ -261,6 +218,10 @@ uint32_t crypto_ietf_chacha20_ctr(uint8_t       *cipher_text,
 // Poly 1305
 // ---------
 
+// This is a *one time* authenticator.
+// Disclosing the mac reveals the key.
+// See crypto_lock() on how to use it properly.
+
 // Direct interface
 void crypto_poly1305(uint8_t        mac[16],
                      const uint8_t *message, size_t message_size,
@@ -275,6 +236,9 @@ void crypto_poly1305_final (crypto_poly1305_ctx *ctx, uint8_t mac[16]);
 
 // X-25519
 // -------
+
+// Shared secrets are not quite random.
+// Hash them to derive an actual shared key.
 void crypto_x25519_public_key(uint8_t       public_key[32],
                               const uint8_t secret_key[32]);
 void crypto_x25519(uint8_t       raw_shared_secret[32],
@@ -283,11 +247,70 @@ void crypto_x25519(uint8_t       raw_shared_secret[32],
 
 // "Dirty" versions of x25519_public_key()
 // Only use to generate ephemeral keys you want to hide.
+// Note that those functions leaks 3 bits of the private key.
 void crypto_x25519_dirty_small(uint8_t pk[32], const uint8_t sk[32]);
 void crypto_x25519_dirty_fast (uint8_t pk[32], const uint8_t sk[32]);
 
-// scalar division
-// ---------------
+// scalar "division"
+// Used for OPRF.  Be aware that exponential blinding is less secure
+// than Diffie-Hellman key exchange.
 void crypto_x25519_inverse(uint8_t       blind_salt [32],
                            const uint8_t private_key[32],
                            const uint8_t curve_point[32]);
+
+
+// EdDSA to X25519
+// ---------------
+void crypto_from_eddsa_private(uint8_t x25519[32], const uint8_t eddsa[32]);
+void crypto_from_eddsa_public (uint8_t x25519[32], const uint8_t eddsa[32]);
+
+
+// EdDSA -- Incremental interface
+// ------------------------------
+
+// Signing (2 passes)
+// Make sure the two passes hash the same message,
+// else you might reveal the private key.
+void crypto_sign_init_first_pass(crypto_sign_ctx_abstract *ctx,
+                                 const uint8_t  secret_key[32],
+                                 const uint8_t  public_key[32]);
+void crypto_sign_update(crypto_sign_ctx_abstract *ctx,
+                        const uint8_t *message, size_t message_size);
+void crypto_sign_init_second_pass(crypto_sign_ctx_abstract *ctx);
+// use crypto_sign_update() again.
+void crypto_sign_final(crypto_sign_ctx_abstract *ctx, uint8_t signature[64]);
+
+// Verification (1 pass)
+// Make sure you don't use (parts of) the message
+// before you're done checking it.
+void crypto_check_init  (crypto_check_ctx_abstract *ctx,
+                         const uint8_t signature[64],
+                         const uint8_t public_key[32]);
+void crypto_check_update(crypto_check_ctx_abstract *ctx,
+                         const uint8_t *message, size_t message_size);
+int crypto_check_final  (crypto_check_ctx_abstract *ctx);
+
+// Custom hash interface
+void crypto_sign_public_key_custom_hash(uint8_t       public_key[32],
+                                        const uint8_t secret_key[32],
+                                        const crypto_sign_vtable *hash);
+void crypto_sign_init_first_pass_custom_hash(crypto_sign_ctx_abstract *ctx,
+                                             const uint8_t secret_key[32],
+                                             const uint8_t public_key[32],
+                                             const crypto_sign_vtable *hash);
+void crypto_check_init_custom_hash(crypto_check_ctx_abstract *ctx,
+                                   const uint8_t signature[64],
+                                   const uint8_t public_key[32],
+                                   const crypto_sign_vtable *hash);
+
+// Elligator 2
+// -----------
+
+// Elligator mappings proper
+void crypto_hidden_to_curve(uint8_t curve [32], const uint8_t hidden[32]);
+int  crypto_curve_to_hidden(uint8_t hidden[32], const uint8_t curve [32],
+                            uint8_t tweak);
+
+// Easy to use key pair generation
+void crypto_hidden_key_pair(uint8_t hidden[32], uint8_t secret_key[32],
+                            uint8_t seed[32]);
