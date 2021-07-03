@@ -3,9 +3,7 @@ os:
   - linux
   - freebsd
 # ===== Linux ======
-dist:
-  - xenial
-  - bionic
+dist: xenial
 python:
   - 3.6
   - 3.7
@@ -13,7 +11,12 @@ python:
   - 3.9
   - pypy3
 jobs:
+  exclude:
+    - os: freebsd
+      python: pypy3
   include:
+    - os: linux
+      dist: bionic
     # ======= OSX ========
     - name: "Python 3.7.5 on macOS 10.14"
       os: osx
@@ -23,7 +26,7 @@ jobs:
         - python3 --version
         - pip3 install -U pip
       script: python3 -m pytest
-    - name: "Python 3.7.7 on macOS 10.15"
+    - name: "Python 3.8.6 on macOS 10.15"
       os: osx
       osx_image: xcode11.6
       language: shell
@@ -31,7 +34,7 @@ jobs:
         - python3 --version
         - pip3 install -U pip
       script: python3 -m pytest
-    - name: "Python 3.8.0 on macOS 11.3"
+    - name: "Python 3.9.5 on macOS 11.3"
       os: osx
       osx_image: xcode12.5
       language: shell
@@ -72,7 +75,7 @@ jobs:
         - python --version
         - python -m pip install --upgrade pip
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
-install: pip install ".[tests]"
+install: pip install ".[tests]" .
 script: python -m pytest
 after_success:
   bash <(curl -s https://codecov.io/bash)

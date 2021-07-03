@@ -1,6 +1,6 @@
 # monocypher-py
 
-[![Build Status](https://travis-ci.org/eugene-eeo/monocypher-py.svg?branch=master)](https://travis-ci.org/eugene-eeo/monocypher-py)
+[![Build Status](https://travis-ci.com/eugene-eeo/monocypher-py.svg?branch=master)](https://travis-ci.org/eugene-eeo/monocypher-py)
 [![codecov](https://codecov.io/gh/eugene-eeo/monocypher-py/branch/master/graph/badge.svg)](https://codecov.io/gh/eugene-eeo/monocypher-py)
 [![Documentation Status](https://readthedocs.org/projects/monocypher-py/badge/?version=latest)](https://monocypher-py.readthedocs.io/en/latest/?badge=latest)
 
