@@ -27,7 +27,11 @@ def test_public_key():
     assert pk == PublicKey(pk.encode())
 
 
-def test_public_workflow():
+MSG = binary()
+
+
+@given(MSG)
+def test_public_workflow(msg):
     sk_a = PrivateKey.generate()
     sk_b = PrivateKey.generate()
 
@@ -37,13 +41,10 @@ def test_public_workflow():
 
     box_a = Box(sk_a, sk_b.public_key)
     box_b = Box(sk_b, sk_a.public_key)
-    assert box_a.shared_key() == box_b.shared_key()
+    assert box_a.shared_key == box_b.shared_key
 
-    msg = box_a.encrypt(b'abc')
-    assert box_b.decrypt(msg) == b'abc'
-
-
-MSG = binary()
+    ct = box_a.encrypt(msg)
+    assert box_b.decrypt(ct) == msg
 
 
 @given(MSG)

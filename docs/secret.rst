@@ -15,6 +15,8 @@ Code) along with the encrypted ciphertext.
    # Automatically generated nonce, similar to Box
    ciphertext = box.encrypt(b'my message')
 
+   # send ciphertext to someone else
+
    # later on ... (key must be the same!)
    box = SecretBox(key)
    assert box.decrypt(ciphertext) == b'my message'

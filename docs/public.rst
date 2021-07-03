@@ -67,9 +67,8 @@ use a :py:class:`~monocypher.public.SealedBox`:
 
     from monocypher.public import SealedBox
 
+    # send a message only decryptable by Bob
     sbox_alice = SealedBox(pk_bob)
-    # Once we encrypt this message, we are unable to decrypt the
-    # ciphertext, even though we created it.
     ciphertext = sbox_alice.encrypt(b'the sequels are better')
 
     # Bob can decrypt it using his private key.
@@ -104,7 +103,6 @@ Reference
 
 .. autoclass:: monocypher.public.Box
    :members:
-   :inherited-members:
 
 
 .. autoclass:: monocypher.public.SealedBox

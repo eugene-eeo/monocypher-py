@@ -83,6 +83,7 @@ class Box(SecretBox):
             their_pk.encode(),
         ))
 
+    @property
     def shared_key(self):
         """
         Returns the shared secret. This value is safe for use as the key
@@ -93,14 +94,15 @@ class Box(SecretBox):
 
 class SealedBox:
     """
-    SealedBox enables you to send a message decryptable by the private key
-    variant of the `receipient_key`. The message will not be decryptable by
-    you after encryption, providing deniability (but with no authentication,
-    the receipient cannot prove who sent the message).
+    SealedBox enables you to send messages decryptable only by the receipient.
+    Each time a message is encrypted, a new ephemeral keypair is generated;
+    the ephemeral private key is used in key-exchange with the `receipient_key`
+    and thrown away after encryption.
 
     :param receipient_key: A :py:class:`.PublicKey` or :py:class:`.PrivateKey`
-                           object. If the latter is provided, then the SealedBox
-                           is able to decrypt messages.
+                           object. If a :py:class:`.PrivateKey` is provided,
+                           then the SealedBox is able to decrypt messages.
+                           Otherwise, SealedBox can only encrypt messages.
     """
 
     __slots__ = ('_pk', '_sk')

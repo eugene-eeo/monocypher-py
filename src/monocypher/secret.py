@@ -13,7 +13,12 @@ class EncryptedMessage(bytes):
     """
     A bytes subclass representing an encrypted message.
     By default, monocypher-python represents encrypted and authenticated
-    messages as `nonce + mac + ciphertext`.
+    messages as ``nonce + mac + ciphertext``, i.e.:
+
+        >>> msg = sbox.encrypt(b'...')
+        >>> msg == msg.nonce + msg.detached_mac + msg.detached_ciphertext
+        True
+
     """
 
     @classmethod
@@ -36,8 +41,14 @@ class EncryptedMessage(bytes):
     def ciphertext(self):
         """
         Returns the concatenated mac and ciphertext.
-        This is equivalent concatenating :py:obj:`.detached_mac`
+        This is equivalent to concatenating :py:obj:`.detached_mac`
         and :py:obj:`.detached_ciphertext`.
+        This can be passed to :py:meth:`SecretBox.decrypt`
+        separately from :py:attr:`.nonce`:
+
+            >>> msg = sbox.encrypt(b'...')
+            >>> sbox.decrypt(msg.ciphertext, msg.nonce)
+            b'...'
 
         :rtype: :class:`bytes`
         """
@@ -113,14 +124,13 @@ class SecretBox(Key):
         """
         Decrypt the given `ciphertext`, `nonce`, and `mac`.
         If the decryption is successful, the plaintext message
-        is returned. If the decryption failed, :py:class:`.CryptoError`
-        is raised.
+        is returned. Otherwise a :py:class:`.CryptoError` is raised.
 
         :param ciphertext: Detached ciphertext to decrypt (bytes).
         :param nonce: The nonce, a :py:obj:`bytes` object of length :py:obj:`.NONCE_SIZE`.
         :param mac: The MAC, a :py:obj:`bytes` object of length :py:obj:`.MAC_SIZE`.
 
-        :rtype: :class:`.EncryptedMessage`
+        :rtype: :class:`bytes`
         """
         msg = crypto_unlock(key=self._key,
                             mac=mac,
@@ -132,13 +142,16 @@ class SecretBox(Key):
 
     def decrypt(self, ciphertext, nonce=None):
         """
-        Decrypt the given `ciphertext`, using the given `nonce` if supplied;
-        otherwise it is extracted from the `ciphertext`. The MAC should be
-        part of the `ciphertext` (see :py:meth:`.encrypt`,
-        alternatively use :py:meth:`.decrypt_raw`).
+        Wrapper around :py:meth:`.decrypt_raw` that decrypts the given
+        `ciphertext`, using the given `nonce` if supplied; otherwise it
+        is extracted from the `ciphertext`.
+        The MAC should be part of the `ciphertext` (see the encryption format
+        in :py:class:`.EncryptedMessage`).
 
         :param ciphertext: A bytes-like object or :py:class:`.EncryptedMessage`.
         :param nonce: Optional nonce if it isn't included in the ciphertext.
+
+        :rtype: :class:`bytes`
         """
         if nonce is None:
             # get from ciphertext, assume that it is encoded
