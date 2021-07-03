@@ -23,3 +23,7 @@ ffi.set_source(
 )
 with open(cdefs_file, 'r') as fp:
     ffi.cdef(fp.read())
+
+
+if __name__ == "__main__":
+    ffi.compile(verbose=True)
