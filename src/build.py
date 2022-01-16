@@ -8,7 +8,7 @@ sources = os.path.join(cwd, 'monocypher-3.1.2-src/')
 
 cdefs_file = os.path.join(cwd, 'monocypher_exposed.h')
 include_dir = sources
-sources     = glob.glob(os.path.join(sources, '*.c'))
+sources     = glob.glob(os.path.join(sources, '**/*.c'), recursive=True)
 
 ffi = cffi.FFI()
 ffi.set_source(
@@ -16,6 +16,7 @@ ffi.set_source(
     '''
 #include <stdlib.h>
 #include <monocypher.h>
+#include <optional/monocypher-ed25519.h>
     ''',
     sources=sources,
     include_dirs=[include_dir],
