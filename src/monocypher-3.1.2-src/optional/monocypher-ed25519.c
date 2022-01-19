@@ -1,4 +1,4 @@
-// Monocypher version __git__
+// Monocypher version 3.1.2
 //
 // This file is dual-licensed.  Choose whichever licence you want from
 // the two licences listed below.
