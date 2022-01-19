@@ -15,6 +15,10 @@ from .crypto_sign import (
     crypto_sign_public_key, crypto_sign, crypto_check,
     crypto_from_eddsa_private, crypto_from_eddsa_public,
 )
+from .crypto_ed25519 import (
+    crypto_ed25519_public_key, crypto_ed25519_sign, crypto_ed25519_check,
+    crypto_from_ed25519_private, crypto_from_ed25519_public,
+)
 
 __all__ = (
     'crypto_lock', 'crypto_unlock',
