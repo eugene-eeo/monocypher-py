@@ -28,6 +28,15 @@ def test_gen_unhide_hide(seed, blind):
     box_unhidden = Box(blind_sk, PublicKey(unhidden_pk))
     assert box_direct.shared_key == box_unhidden.shared_key
 
+    # Elligator2 maps a point to a 254-bit representative indistinguishable
+    # from uniformly random bits (with a negliby small bias), but the upper
+    # two bits of our 256-bit values are always 0, so the 256-bit values the
+    # user operates on are statistically recognizable (by looking at these
+    # two bits). To work around that problem, the Monocypher library copies
+    # the two upper bits of the 8-bit "tweak" into bits 254 and 255.
+    # For the purpose of this test we need to reconstruct the original
+    # "tweak" argument by carving these two padding bits out from the 256-bit
+    # value:
     tweak = (hidden_pk[31] & 0b11000000)
     # we don't know which representative we got, the lower bit of the tweak
     # selects the negative/positive (can't remember which is which).
