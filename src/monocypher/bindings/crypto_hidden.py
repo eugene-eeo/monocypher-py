@@ -1,13 +1,14 @@
 from monocypher.utils import ensure_length
 from monocypher._monocypher import lib, ffi
 
+
 def crypto_curve_to_hidden(your_pk, tweak):
     ensure_length('your_pk', your_pk, 32)
 
     curve = ffi.from_buffer('uint8_t[32]', your_pk)
     hidden = ffi.new('uint8_t[32]')
 
-    if lib.crypto_curve_to_hidden(hidden, curve, tweak):
+    if lib.crypto_curve_to_hidden(hidden, curve, tweak): # pragma: no cover
         return None # unsuitable for hiding
     return bytes(hidden)
 
