@@ -19,6 +19,10 @@ from .crypto_ed25519 import (
     crypto_ed25519_public_key, crypto_ed25519_sign, crypto_ed25519_check,
     crypto_from_ed25519_private, crypto_from_ed25519_public,
 )
+from .crypto_hidden import (
+    crypto_curve_to_hidden, crypto_hidden_to_curve,
+    crypto_hidden_key_pair,
+)
 
 __all__ = (
     'crypto_lock', 'crypto_unlock',
