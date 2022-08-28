@@ -1,3 +1,4 @@
 include src/monocypher-3.1.2-src/*
+include src/monocypher-3.1.2-src/optional/*
 include src/build.py
 include src/monocypher_exposed.h

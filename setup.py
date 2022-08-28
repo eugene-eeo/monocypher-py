@@ -1,7 +1,7 @@
 from setuptools import setup
 
 
-version = '0.0.2'
+version = '0.0.3'
 
 
 install_requires = ['cffi>=1.14']
